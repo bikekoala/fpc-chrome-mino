@@ -1,37 +1,27 @@
 <template>
-    
-    <div class="item">   
-        <i 
-            @click="settingHanlder"
-            class="material-icons"
-            >{{option.icon}}</i>
-      <transition name="top">
-        <div 
-            v-if="visible"
-            class="setting dialog">      
-           
-            <Featrues/>     
-            <Background/>            
-            <More/>
-        
-            <div class="bottom">                  
-              <span 
-                  class="button"
-                  @click.stop="close"            
-              >Dismiss</span>   
-            </div>
-
-
-        </div>  
-      </transition>
-    </div> 
-   
+  <div class="item">
+    <i
+      @click="settingHanlder"
+      class="material-icons">{{option.icon}}</i>
+    <transition name="top">
+    <div
+      v-if="visible"
+      class="setting dialog">
+      <Featrues/>
+      <Background/>
+      <div class="bottom">
+        <span
+          class="button"
+          @click.stop="close">忽略</span>
+      </div>
+    </div>
+    </transition>
+  </div>
 </template>
 
 <script>
-import Featrues from "./featrues.vue"
+import Featrues from './featrues.vue'
 import Background from './background.vue'
-import More from './more.vue'
 
 export default {
   props: {
@@ -45,15 +35,15 @@ export default {
     }
   },
   components: {
-    Featrues,Background,More
+    Featrues, Background
   },
   methods: {
     close() {
-      this.$emit("close", "setting");
+      this.$emit('close', 'setting')
     },
     settingHanlder() {
-      this.$emit("settingHandler");
-    } 
+      this.$emit('settingHandler')
+    }
   }
 }
 </script>

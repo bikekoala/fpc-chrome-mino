@@ -1,7 +1,7 @@
 <template>
-  <div class="container">    
-        <Search />
-        <Sites />    
+  <div class="container">
+    <Search />
+    <Sites />
   </div>
 </template>
 
@@ -10,9 +10,9 @@
 import Search from './container/search.vue'
 import Sites from './container/commonsite.vue'
 
-export default {  
+export default {
   components: {
-    Search,Sites
+    Search, Sites
   }
 }
 </script>

@@ -1,7 +1,5 @@
-node_modules/
-release/
-npm-debug.log
-.vscode/
-package-lock
-temp
-.tmp
+node_modules
+package-lock.json
+
+.DS_Store
+*.sw*

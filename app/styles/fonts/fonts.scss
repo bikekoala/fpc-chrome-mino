@@ -1,14 +1,8 @@
-
-
-
-
 $font-path: './fonts/' !default;
 $font-name: 'OpenSans-Regular' !default;
 $font-size: 24px !default;
 $font-family: 'Open Sans' !default;
-
 $font-file: $font-path + $font-name;
-
 
 @font-face {
   font-family: $font-family;
