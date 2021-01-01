@@ -7,7 +7,7 @@ import KEYS from './storekeys'
 export const allEngines = [
   {
     name: '素材',
-    desc: '英国 国旗',
+    desc: '美国 国旗',
     key: 'video',
     actions: [
       {
