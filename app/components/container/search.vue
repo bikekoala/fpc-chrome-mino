@@ -5,7 +5,7 @@
 
     <div class="engines">
       <div
-        v-for="(engine,index) in engines"
+        v-for="(engine, index) in engines"
         :key="engine.name"
         :class="current.name === engine.name ? 'selected' : 'unselected'"
         @click="changeEngine(index)">
@@ -14,25 +14,28 @@
     </div>
 
     <div class="bar">
-      <form :action="current.action">
-        <input
-          type="text"
-          :name="current.inputName"
-          autofocus autocomplete="off" placeholder="Go anywhere.">
-      </form>
+      <input
+        type="text"
+        autofocus
+        autocomplete="off"
+        v-model="keyword"
+        :placeholder="current.desc"
+        @keyup.enter="searchIt">
     </div>
   </div>
 </template>
 
 <script>
 import * as engineAPI from '../../api/engines'
+import translate from '../../api/google/translate'
 import { mapGetters } from 'vuex'
 
 export default {
   data() {
-    return{
+    return {
       engines: null,
       current: {},
+      keyword: '',
       styles: {
         hasCommonsites: '',
         noCommonsites: 'noCommonsites'
@@ -42,14 +45,14 @@ export default {
   created() {
     // get data from api
     this.engines = engineAPI.allEngines
-    engineAPI.getEngineIndx.then( idx =>{
+    engineAPI.getEngineIndx.then(idx => {
       this.current = this.engines[idx]
-      console.log(1111, this.current.name)
     })
   },
   computed: {
     ...mapGetters([
-      'commonsites'
+      'commonsites',
+      'searches'
     ])
   },
   components: {
@@ -59,6 +62,41 @@ export default {
     changeEngine(idx) {
       this.current = this.engines[idx]
       engineAPI.setEngineIndx(idx)
+    },
+
+    // 搜索
+    searchIt() {
+      const keyword = this.keyword || this.current.desc
+      if (this.current.key === 'video') {
+        for (const action of this.current.actions) {
+          if (action.key === 'bilibili') {
+            this.redirect(action.url, keyword, true)
+          }
+
+          if (action.key === 'youtube') {
+            if (this.searches.search_youtube_trans.status) {
+              translate(keyword).then(text => {
+                this.redirect(action.url, text)
+              })
+            } else {
+              this.redirect(action.url, keyword)
+            }
+          }
+        }
+      } else {
+        this.redirect(this.current.url, keyword)
+      }
+    },
+
+    // 跳转
+    redirect(url, keyword, isNewPage = false) {
+      keyword = encodeURIComponent(keyword)
+      url = url.replace(':keyword', keyword)
+      if (isNewPage) {
+        window.open(url, '_blank')
+      } else {
+        window.location.href = url
+      }
     }
   }
 };
@@ -131,8 +169,8 @@ export default {
 }
 
 .search {
-  width: 680px;
-  height: 70px;
+  width: 50%;
+  height: 55px;
   padding: 0 2px;
   display: flex;
   align-items: center;
@@ -142,31 +180,9 @@ export default {
   transform: translate(-50%,-50%);
   z-index: inherit;
 
-  & > .icon {
-    width: 55px;
-    height: 55px;
-
-    padding: 2px;
-    background: #fff;
-    opacity: .84;
-
-    border: 1px solid #eee;
-    border-radius: 4px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    cursor: pointer;
-    & > img {
-      width: 36px;
-      height: 36px;
-    }
-  }
-
   & > .bar {
-    width: 520px;
-    height: 55px;
+    width: 100%;
+    height: 100%;
     margin-left: 18px;
     background: #fff;
     display: inline-block;

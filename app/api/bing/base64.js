@@ -1,7 +1,7 @@
 /**
  * 图片处理相关
  */
-import * as store from './localstore.js'
+import * as store from '../localstore.js'
 
 const KEY_BACKGROUND = 'background'
 

@@ -6,17 +6,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as Setting from '../api/setting.js'
-import * as BingAPI from '../api/bing.js'
+import * as BingAPI from '../api/bing/image.js'
 
 const state = {
-  featrues: null, // 包括application lovasites 的设置
+  searches: null, // 搜索设置
+  featrues: null, // 包括 application lovasites 的设置
   bing: null, // 必应背景设置项 {name: "bing", status: false}
-  color: null //纯色背景设置  #987a3b
+  color: null //纯色背景设置 #987a3b
 }
 
 /**
  * 初始化数据
  */
+Setting.fetchSearches.then(data => {
+  state.searches = data
+})
 Setting.fetchFeatures.then(data => {
   state.featrues = data
 })
@@ -29,6 +33,7 @@ Setting.fetchColor.then(data => {
 
 // getters
 const getters = {
+  searches: state => state.searches,
   featrues: state => state.featrues,
   application: state => state.featrues ? state.featrues.application : null, // 防止空值异常
   commonsites: state => state.featrues ? state.featrues.commonsites : null,
@@ -38,24 +43,29 @@ const getters = {
 
 // mutation 的类型
 const types = {
+  SET_SEARCHES_VALUE: 'SET_SEARCHES_VALUE',
+  SET_FEATRUES_VALUE: 'SET_FEATRUES_VALUE',
   SET_BING_STATUS: 'SET_BING_STATUS',
   SET_BING_INITAL : 'SET_BING_INITAL',
-  SET_FEATRUES_VALUE: 'SET_FEATRUES_VALUE',
   SET_COLOR: 'SET_COLOR'
 }
 
 // mutation
 const mutations = {
+  // 开启/关闭 搜索设置
+  [types.SET_SEARCHES_VALUE](state, { type,status }) {
+    state.searches[type].status = status
+  },
+  // 开启/关闭 Featrues 设置
+  [types.SET_FEATRUES_VALUE](state, { type,status }) {
+    state.featrues[type].status = status
+  },
   // 开启/关闭 必应背景图片
   [types.SET_BING_STATUS](state, status) {
     state.bing.status = status
   },
   [types.SET_BING_INITAL](state, val) {
     state.bing.inital = val
-  },
-  // 开启/关闭 Featrues 设置
-  [types.SET_FEATRUES_VALUE](state, { type,status }) {
-    state.featrues[type].status = status
   },
   // 设置颜色值
   [types.SET_COLOR](state, value) {
@@ -65,11 +75,23 @@ const mutations = {
 
 const actions = {
   /**
+   * 修改 搜索设置
+   * @param {String} type [application/setting]
+   * @param {Boolean} status
+   */
+  modifySearches({ commit, state}, { type, status }) {
+    // 修改vuex的值
+    commit(types.SET_SEARCHES_VALUE, { type, status })
+    // 存储新的数据
+    Setting.modify(type, status)
+  },
+
+  /**
    * 修改 featrues
    * @param {String} type [application/setting]
    * @param {Boolean} status
    */
-  modifyFeatrues({ commit, state}, { type,status }) {
+  modifyFeatrues({ commit, state}, { type, status }) {
     // 修改vuex的值
     commit(types.SET_FEATRUES_VALUE, { type, status })
     // 存储新的数据
@@ -77,7 +99,7 @@ const actions = {
   },
 
   /*
-   * 修改 Bing背景图片
+   * 修改 Bing 背景图片
    * @param {Boolean} status
    */
   modifyBackground({ commit, state }, image) {

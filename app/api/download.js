@@ -4,11 +4,9 @@
  * @param {function} cb 回调函数
  */
 const download = (url, cb) => {
-  typeof cb === 'function' ? chrome.downloads.download({
-    url
-  }, cb) : chrome.downloads.download({
-    url
-  })
+  typeof cb === 'function' ?
+    chrome.downloads.download({ url }, cb) :
+    chrome.downloads.download({ url })
 }
 
 export default download

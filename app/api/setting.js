@@ -5,6 +5,12 @@ import KEYS from './storekeys.js'
  * 默认设置
  */
 export const defaluts = {
+  search_youtube_trans: {
+    name: 'search_youtube_trans',
+    text: 'Youtube 自动翻译',
+    status: true,
+    storeKey: KEYS.SETTING_SEARCH_YOUTUBE_TRANS
+  },
   application: {
     name: 'application',
     text: '业务网站',
@@ -20,7 +26,7 @@ export const defaluts = {
 }
 
 /**
- * bing设置
+ * bing 设置
  */
 export const bing = {
   name: 'bing',
@@ -50,13 +56,25 @@ function fetch(key, value) {
   })
 }
 
-export const fetchApplication = fetch(KEYS.SETTING_APPLICATION, defaluts.application)
-export const fetchCommonsites = fetch(KEYS.SETTING_COMMONSITES, defaluts.commonsites)
-export const fetchBing = fetch(KEYS.SETTING_BING, bing)
+const fetchSearchYoutubeTrans = fetch(KEYS.SETTING_SEARCH_YOUTUBE_TRANS, defaluts.search_youtube_trans)
+const fetchApplication = fetch(KEYS.SETTING_APPLICATION, defaluts.application)
+const fetchCommonsites = fetch(KEYS.SETTING_COMMONSITES, defaluts.commonsites)
 
-// 获取上面2个的数据数组
+/**
+ * 查询 搜索 设置项
+ */
+export const fetchSearches = Promise.all([fetchSearchYoutubeTrans]).then(datas => {
+  const data = {
+    search_youtube_trans: datas[0]
+  }
+  return Promise.resolve(data)
+})
+
+/**
+ * 查询 模块 设置项
+ */
 export const fetchFeatures = Promise.all([fetchApplication, fetchCommonsites]).then(datas => {
-  let data = {
+  const data = {
     application: datas[0],
     commonsites: datas[1]
   }
@@ -64,12 +82,31 @@ export const fetchFeatures = Promise.all([fetchApplication, fetchCommonsites]).t
 })
 
 /**
- * 修改设置项
+ * 查询 必应设置项
+ */
+export const fetchBing = fetch(KEYS.SETTING_BING, bing)
+
+function set(key, status, source) {
+  if (typeof status === 'boolean') {
+    Object.assign(source, {
+      status: status
+    })
+    store.storeData({
+      [key]: source
+    })
+  }
+}
+
+/**
+ * 修改 设置项
  * @param {string} type
  * @param {boolean} value
  */
 export const modify = (type, value) => {
   switch (type) {
+    case 'search_youtube_trans':
+      set(KEYS.SETTING_SEARCH_YOUTUBE_TRANS, value, defaluts.search_youtube_trans)
+      break;
     case 'application':
       set(KEYS.SETTING_APPLICATION, value, defaluts.application)
       break;
@@ -83,25 +120,6 @@ export const modify = (type, value) => {
       break;
   }
 }
-
-/**
- *
- * @param {String} key
- * @param {Boolean} value
- * @param {Object} source
- */
-function set(key, status, source) {
-  if (typeof status === 'boolean') {
-
-    Object.assign(source, {
-      status: status
-    })
-    store.storeData({
-      [key]: source
-    })
-  }
-}
-
 
 /**
  * 默认颜色

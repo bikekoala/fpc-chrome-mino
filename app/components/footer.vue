@@ -33,7 +33,7 @@ import Gallery from './footer/gallery.vue'
 import Info from './footer/info.vue'
 
 import {mapGetters} from 'vuex'
-import * as BingAPI from '../api/bing.js'
+import * as BingAPI from '../api/bing/image.js'
 
 export default {
   data() {

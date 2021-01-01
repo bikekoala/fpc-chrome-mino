@@ -7,6 +7,7 @@
     <div
       v-if="visible"
       class="setting dialog">
+      <Searches/>
       <Featrues/>
       <Background/>
       <div class="bottom">
@@ -20,6 +21,7 @@
 </template>
 
 <script>
+import Searches from './searches.vue'
 import Featrues from './featrues.vue'
 import Background from './background.vue'
 
@@ -35,7 +37,9 @@ export default {
     }
   },
   components: {
-    Featrues, Background
+    Searches,
+    Featrues,
+    Background
   },
   methods: {
     close() {

@@ -1,6 +1,6 @@
-import * as store from './localstore.js'
-import KEYS from './storekeys'
-import {storeBase64,fetchBase64} from './base64.js'
+import * as store from '../localstore.js'
+import KEYS from '../storekeys'
+import { storeBase64, fetchBase64 } from './base64.js'
 
 // 图片对象的具体信息
 

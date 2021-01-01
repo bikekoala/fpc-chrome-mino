@@ -6,14 +6,31 @@ import KEYS from './storekeys'
  */
 export const allEngines = [
   {
-    name: '科普',
-    action: 'https://www.google.com/search',
-    inputName: 'q'
+    name: '素材',
+    desc: '英国 国旗',
+    key: 'video',
+    actions: [
+      {
+        key: 'bilibili',
+        url: 'https://search.bilibili.com/all?keyword=:keyword'
+      },
+      {
+        key: 'youtube',
+        url: 'https://www.youtube.com/results?search_query=:keyword'
+      },
+    ]
   },
   {
-    name: '混剪',
-    action: 'https://www.bing.com/search',
-    inputName: 'q'
+    name: '影视',
+    desc: '肖申克的救赎',
+    key: 'movie',
+    url: 'https://search.douban.com/movie/subject_search?search_text=:keyword'
+  },
+  {
+    name: '谷歌',
+    desc: '维基百科',
+    key: 'google',
+    url: 'https://www.google.com/search?q=:keyword'
   }
 ]
 
@@ -25,8 +42,8 @@ export const getEngineIndx = store.getData(KEYS.ENGINIE).then(data => {
   // 没有默认的搜索引擎
   // 设置 谷歌
   if (store.isEmptyData(data)) {
-    let defaults = {
-      [KEYS.ENGINIE]: 0
+    const defaults = {
+      [KEYS.ENGINIE]: 3
     }
     store.storeData(defaults)
     return defaults[KEYS.ENGINIE]

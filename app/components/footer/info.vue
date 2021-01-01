@@ -3,7 +3,7 @@
   <div
     class="box"
     v-show="show">
-    <img :src="background.url" >
+    <img :src="background.url">
     <span>{{formatDate}}</span>
 
     <span
