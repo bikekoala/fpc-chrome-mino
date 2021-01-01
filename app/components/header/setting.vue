@@ -10,6 +10,7 @@
       <Searches/>
       <Featrues/>
       <Background/>
+      <More/>
       <div class="bottom">
         <span
           class="button"
@@ -24,6 +25,7 @@
 import Searches from './searches.vue'
 import Featrues from './featrues.vue'
 import Background from './background.vue'
+import More from './more.vue'
 
 export default {
   props: {
@@ -39,7 +41,8 @@ export default {
   components: {
     Searches,
     Featrues,
-    Background
+    Background,
+    More
   },
   methods: {
     close() {
