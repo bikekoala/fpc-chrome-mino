@@ -1,8 +1,9 @@
-const webpack = require('webpack'),
-  path = require('path'),
-  HtmlWebpackPlugin = require('html-webpack-plugin'),
-  ExtractTextPlugin = require('extract-text-webpack-plugin'),
-  CleanPlugin = require('clean-webpack-plugin')
+const path = require('path')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -16,50 +17,54 @@ const config = {
     path: path.join(__dirname, './build')
   },
   module: {
-    rules: [{
-      test: /\.vue$/,
-      loader: 'vue-loader'
-    }, {
-      test: /\.js$/,
-      use: {
-        loader: 'babel-loader'
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
       },
-      exclude: /node_modules/
-    }, {
-      test: /\.(scss|sass)$/,
-      use: ExtractTextPlugin.extract({
-        fallback: "style-loader",
-        publicPath: '../../',
-        use: [{
-          loader: 'css-loader',
-          options: {
-            importLoaders: 2,
-            minimize: true
-          }
+      {
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader'
         },
+        exclude: /node_modules/
+      },
+      {
+        test: /\.(scss|sass)$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../../'
+            }
+          },
+          'css-loader',
           'sass-loader'
         ]
-      })
-    }, {
-      test: /\.(png|jpg|gif)$/,
-      use: [{
-        loader: 'url-loader',
-        options: {
-          name: 'img/[name].[hash:4].[ext]',
-          limit: 1024
-        }
-      }]
-    }, {
-      test: /\.(woff|svg|eot|ttf)\??.*$/,
-      use: {
-        loader: 'file-loader',
-        options: {
-          name: 'fonts/[name].[ext]'
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            name: 'img/[name].[hash:4].[ext]',
+            limit: 1024
+          }
+        }]
+      },
+      {
+        test: /\.(woff|svg|eot|ttf)\??.*$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'fonts/[name].[ext]'
+          }
         }
       }
-    }]
+    ]
   },
   plugins: [
+    new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       title: 'New Tab',
       chunks: ['tab'],
@@ -70,21 +75,32 @@ const config = {
       chunks: ['popup'],
       filename: 'popup.html'
     }),
-    new ExtractTextPlugin('style.css')
-  ]
+    new MiniCssExtractPlugin()
+  ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          format: {
+            comments: false
+          },
+        },
+        extractComments: false
+      })
+    ]
+  }
 }
 
 if (isDev) {
-  config.devtool = '#cheap-module-eval-source-map'
-
+  config.devtool = 'eval-cheap-module-source-map'
 } else {
   config.plugins.push(
-    new CleanPlugin('./build', {
-      // 一般不更新图标 所以不删除fonts
-      exclude: ['manifest.json','static', 'fonts']
-    }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin())
+    new CleanWebpackPlugin({
+      verbose: true,
+      cleanOnceBeforeBuildPatterns: ['**/*', '!manifest.json', '!static']
+    })
+  )
 }
 
 module.exports = config
