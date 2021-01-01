@@ -124,62 +124,6 @@
   letter-spacing: .5px;
 }
 
-.engines[data-v-5c870843] {
-  position: absolute;
-  margin-top: -97px;
-  z-index: 2;
-}
-.engines > div[data-v-5c870843] {
-    position: relative;
-    display: inline-block;
-    height: 26px;
-    line-height: 26px;
-    font-size: 16px;
-    text-align: center;
-    cursor: pointer;
-    padding: 5px 17px;
-    margin-right: 2px;
-    color: #464646;
-}
-.engines > div[data-v-5c870843]:after {
-      content: '';
-      position: absolute;
-      top: 4px;
-      right: 0;
-      bottom: -10px;
-      left: 0;
-      z-index: -1;
-      transform: scale(1.1, 1.3) perspective(0.5em) rotateX(2.2deg);
-      transform-origin: bottom left;
-      background: rgba(255, 255, 255, 0.8);
-      border-top-left-radius: 2px;
-      border-top-right-radius: 2px;
-}
-.engines > div.selected[data-v-5c870843] {
-    color: #010101;
-    cursor: auto;
-    z-index: 1;
-}
-.engines > div.selected[data-v-5c870843]:before {
-      content: '';
-      background: #fff;
-      position: absolute;
-      left: 0;
-      height: 5px;
-      bottom: -13px;
-      width: 72px;
-      z-index: 1;
-}
-.engines > div.selected[data-v-5c870843]:after {
-      background: #fff;
-}
-.engines > div.unselected[data-v-5c870843] {
-    text-shadow: 0 0 3px white;
-}
-.engines > div.unselected[data-v-5c870843]:after {
-      border: 1px rgba(255, 255, 255, 0.2) solid;
-      border-bottom: none;
-}
 .search[data-v-5c870843] {
   width: 50%;
   height: 55px;
@@ -191,6 +135,62 @@
   transform: translate(-50%, -50%);
   z-index: inherit;
 }
+.search > .engines[data-v-5c870843] {
+    position: absolute;
+    margin-top: -97px;
+    z-index: 2;
+}
+.search > .engines > div[data-v-5c870843] {
+      position: relative;
+      display: inline-block;
+      height: 26px;
+      line-height: 26px;
+      font-size: 16px;
+      text-align: center;
+      cursor: pointer;
+      padding: 5px 17px;
+      margin-right: 2px;
+      color: #464646;
+}
+.search > .engines > div[data-v-5c870843]:after {
+        content: '';
+        position: absolute;
+        top: 4px;
+        right: 0;
+        bottom: -10px;
+        left: 0;
+        z-index: -1;
+        transform: scale(1.1, 1.3) perspective(0.5em) rotateX(2.2deg);
+        transform-origin: bottom left;
+        background: rgba(255, 255, 255, 0.8);
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+}
+.search > .engines > div.selected[data-v-5c870843] {
+      color: #010101;
+      cursor: auto;
+      z-index: 1;
+}
+.search > .engines > div.selected[data-v-5c870843]:before {
+        content: '';
+        background: #fff;
+        position: absolute;
+        left: 0;
+        height: 5px;
+        bottom: -13px;
+        width: 72px;
+        z-index: 1;
+}
+.search > .engines > div.selected[data-v-5c870843]:after {
+        background: #fff;
+}
+.search > .engines > div.unselected[data-v-5c870843] {
+      text-shadow: 0 0 3px white;
+}
+.search > .engines > div.unselected[data-v-5c870843]:after {
+        border: 1px rgba(255, 255, 255, 0.2) solid;
+        border-bottom: none;
+}
 .search > .bar[data-v-5c870843] {
     width: 100%;
     height: 100%;
@@ -200,6 +200,44 @@
 .search > .bar > form[data-v-5c870843] {
       width: 100%;
       height: 100%;
+}
+.search > .suggest[data-v-5c870843] {
+    background: #fff;
+    position: absolute;
+    z-index: 99;
+    top: 55px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-top: 0 none;
+}
+.search > .suggest li[data-v-5c870843] {
+      overflow: hidden;
+      border-bottom: 1px solid #eee;
+      font-size: 12px;
+}
+.search > .suggest li > a[data-v-5c870843]:link, .search > .suggest li > a[data-v-5c870843]:visited {
+        text-decoration: none;
+}
+.search > .suggest li > a[data-v-5c870843] {
+        color: #999;
+        display: block;
+        overflow: hidden;
+        padding: 6px;
+        zoom: 1;
+}
+.search > .suggest li > a > img[data-v-5c870843] {
+          float: left;
+          margin-right: 8px;
+          margin-top: 3px;
+}
+.search > .suggest li > a > p[data-v-5c870843] {
+          margin: 0;
+          zoom: 1;
+          overflow: hidden;
+}
+.search > .suggest li > a > p > em[data-v-5c870843] {
+            font-style: normal;
+            color: #369;
 }
 .noCommonsites[data-v-5c870843] {
   top: 20%;

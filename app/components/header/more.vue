@@ -8,7 +8,7 @@
       <span @click="clearLocalstore">清空缓存</span>
     </div>
     <div class="item">
-      <a target="_blank" href="https://github.com/bikekoala/fpc-mino/issues">反馈</a>
+      <a href="https://github.com/bikekoala/fpc-mino/issues">反馈</a>
     </div>
   </div>
 </template>
