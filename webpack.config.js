@@ -98,7 +98,7 @@ if (isDev) {
   config.plugins.push(
     new CleanWebpackPlugin({
       verbose: true,
-      cleanOnceBeforeBuildPatterns: ['**/*', '!manifest.json', '!static']
+      cleanOnceBeforeBuildPatterns: ['**/*', '!manifest.json', '!static', '!static/**/*']
     })
   )
 }

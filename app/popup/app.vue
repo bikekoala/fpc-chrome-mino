@@ -2,7 +2,7 @@
   <div class="popup">
     <img id="icon" :src="icon"/>
     <span>mino built by vue.js,</span>
-    <a target="_blank" href="https://github.com/bikekoala/fpc-chrome-mino">@see more.</a>
+    <a target="_blank" href="https://github.com/bikekoala/fpc-mino">@see more.</a>
     <span id="button"
           @click="newtab">New Tab Page</span>
   </div>

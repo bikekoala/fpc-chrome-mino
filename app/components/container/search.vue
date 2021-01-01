@@ -24,7 +24,17 @@
         @keyup.enter="searchIt">
     </div>
 
-    <div class="suggest" v-show="current.key === 'movie'">
+    <div class="suggest" v-if="current.key !== 'movie'">
+      <ul>
+        <li
+          v-for="(text, index) in suggest"
+          :key="index">
+          <a href="#" @click="searchIt(text)">{{text}}</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="suggest" v-if="current.key === 'movie'">
       <ul>
         <li
           v-for="(movie, index) in suggest"
@@ -48,10 +58,10 @@
 </template>
 
 <script>
-import vueDebounce from 'vue-debounce'
 import { mapGetters } from 'vuex'
 import * as engineAPI from '../../api/engines'
 import translate from '../../api/google/translate'
+import suggest from '../../api/google/suggest'
 import doubanMovieSearch from '../../api/douban/movie'
 
 export default {
@@ -68,11 +78,11 @@ export default {
     }
   },
   created() {
-    // get data from api
     this.engines = engineAPI.allEngines
     engineAPI.getEngineIndx.then(idx => {
       this.current = this.engines[idx]
     })
+
   },
   watch: {
     keyword: function (text) {
@@ -91,6 +101,9 @@ export default {
       this.current = this.engines[idx]
       engineAPI.setEngineIndx(idx)
       this.$refs.keyword.focus()
+
+      this.suggest = []
+      this.suggestKeywords(this.keyword)
     },
 
     // 关键字推荐
@@ -104,14 +117,17 @@ export default {
       if (this.current.key === 'movie') {
         doubanMovieSearch(text).then(items => {
           this.suggest = items
-          console.log(1, this.suggest)
+        })
+      } else {
+        suggest(text).then(items => {
+          this.suggest = items
         })
       }
     },
 
     // 搜索
-    searchIt() {
-      const keyword = this.keyword || this.current.desc
+    searchIt(keyword) {
+      keyword = typeof keyword === 'string' ? keyword : (this.keyword || this.current.desc)
       if (this.current.key === 'video') {
         for (const action of this.current.actions) {
           if (action.key === 'bilibili') {
