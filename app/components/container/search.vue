@@ -18,6 +18,7 @@
         type="text"
         autofocus
         autocomplete="off"
+        ref="keyword"
         v-model="keyword"
         :placeholder="current.desc"
         @keyup.enter="searchIt">
@@ -62,6 +63,7 @@ export default {
     changeEngine(idx) {
       this.current = this.engines[idx]
       engineAPI.setEngineIndx(idx)
+      this.$refs.keyword.focus()
     },
 
     // 搜索
@@ -106,7 +108,6 @@ export default {
 .engines {
   position: absolute;
   margin-top: -97px;
-  margin-left: 18px;
   z-index: 2;
 
   & > div {
@@ -171,7 +172,6 @@ export default {
 .search {
   width: 50%;
   height: 55px;
-  padding: 0 2px;
   display: flex;
   align-items: center;
   position: absolute;
@@ -183,7 +183,6 @@ export default {
   & > .bar {
     width: 100%;
     height: 100%;
-    margin-left: 18px;
     background: #fff;
     display: inline-block;
 

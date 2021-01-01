@@ -43,7 +43,7 @@ export const getEngineIndx = store.getData(KEYS.ENGINIE).then(data => {
   // 设置 谷歌
   if (store.isEmptyData(data)) {
     const defaults = {
-      [KEYS.ENGINIE]: 3
+      [KEYS.ENGINIE]: 2
     }
     store.storeData(defaults)
     return defaults[KEYS.ENGINIE]

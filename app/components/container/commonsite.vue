@@ -39,7 +39,7 @@ export default {
 
 <style lang="scss" scoped>
 .loves {
-  width: 640px;
+  width: 50%;
   margin-top: 36px;
 
   display: flex;
