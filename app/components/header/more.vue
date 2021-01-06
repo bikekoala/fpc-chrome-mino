@@ -21,7 +21,7 @@ export default {
     return {
       plugins: [
         // 哔哩哔哩下载助手 [Chrome 扩展]
-        'https://chrome.google.com/webstore/detail/bilibili%E5%93%94%E5%93%A9%E5%93%94%E5%93%A9%E4%B8%8B%E8%BD%BD%E5%8A%A9%E6%89%8B/bfcbfobhcjbkilcbehlnlchiinokiijp',
+        'https://csser.top/',
         // 油猴脚本 [Chrome 扩展]
         'https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=zh-CN',
         // Youtube 视频下载 [油猴脚本]
