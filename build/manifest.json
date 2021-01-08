@@ -1,6 +1,6 @@
 {
   "name": "Mino - FPC",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "manifest_version": 2,
   "description": "a cool new tab extension for FPC",
   "icons": {
@@ -18,8 +18,9 @@
     "chrome://favicon/",
     "downloads",
     "storage",
-    "http://*/*",
-    "https://*/*"
+    "https://*.bing.com/",
+    "https://*.google.com/",
+    "https://douban.lovemefan.top/"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

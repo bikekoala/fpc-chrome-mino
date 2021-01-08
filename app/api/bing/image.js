@@ -47,7 +47,7 @@ const BingAPI = options => {
     Object.assign(config, defaults, options)
   }
   // open ajax
-  xhr.open('GET', `http://cn.bing.com/HPImageArchive.aspx?format=${config.format}&idx=${config.idx}&n=${config.n}`, true)
+  xhr.open('GET', `https://cn.bing.com/HPImageArchive.aspx?format=${config.format}&idx=${config.idx}&n=${config.n}`, true)
   xhr.send(null)
   // 回调函数
   return new Promise((resolve, reject) => {
@@ -61,7 +61,7 @@ const BingAPI = options => {
 
           data.images.forEach(image => {
             result.push(
-              new Image(id++, `https://cn.bing.com${image.url}`, image.enddate, image.copyright))
+              new Image(id++, `httpss://cn.bing.com${image.url}`, image.enddate, image.copyright))
           })
           // 根据日期 顺排序
           resolve(result.reverse())
