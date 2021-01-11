@@ -61,7 +61,7 @@ const BingAPI = options => {
 
           data.images.forEach(image => {
             result.push(
-              new Image(id++, `httpss://cn.bing.com${image.url}`, image.enddate, image.copyright))
+              new Image(id++, `https://cn.bing.com${image.url}`, image.enddate, image.copyright))
           })
           // 根据日期 顺排序
           resolve(result.reverse())
