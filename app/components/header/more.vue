@@ -1,14 +1,14 @@
 <template>
   <div>
-    <h3 class="title">更多</h3>
-    <div class="item">
-      <span @click="redirectPluginPages">安装下载插件</span>
-    </div>
+    <h3 class="title">更多（v0.2.1）</h3>
     <div class="item">
       <span @click="clearLocalstore">清空缓存</span>
     </div>
     <div class="item">
-      <a href="https://github.com/bikekoala/fpc-mino/issues">反馈</a>
+      <span @click="redirectPluginPages">安装下载插件</span>
+    </div>
+    <div class="item">
+      <a href="https://github.com/bikekoala/fpc-mino/issues">反馈：@樹袋大熊</a>
     </div>
   </div>
 </template>
@@ -20,10 +20,12 @@ export default {
   data() {
     return {
       plugins: [
-        // 哔哩哔哩下载助手 [Chrome 扩展]
-        'https://csser.top/',
         // 油猴脚本 [Chrome 扩展]
         'https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=zh-CN',
+        // 记事本 [Chrome 扩展]
+        'https://chrome.google.com/webstore/detail/notepad/ffbhefmlcoihbjcmibbfkocmnaiacinp?hl=zh-CN',
+        // 哔哩哔哩下载助手 [Chrome 扩展]
+        'https://csser.top/',
         // Youtube 视频下载 [油猴脚本]
         'https://greasyfork.org/en/scripts/369400-local-youtube-downloader',
         // 豆瓣电影资源助手 [油猴脚本]

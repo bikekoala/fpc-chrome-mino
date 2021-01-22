@@ -27,16 +27,16 @@ export const allEngines = [
     url: 'https://search.douban.com/movie/subject_search?search_text=:keyword'
   },
   {
-    name: '微信',
-    desc: '薛定谔的猫',
-    key: 'wechat',
-    url: 'https://weixin.sogou.com/weixin?type=2&query=:keyword'
-  },
-  {
     name: '配音',
     desc: '我步入丛林，希望活得更有意义。\n我希望活得深刻，汲取所有生命之精髓！\n击溃所有非生命的事物...\n在生命终结时，不想感叹自己从没活过...',
     key: 'tts',
     url: ''
+  },
+  {
+    name: '微信',
+    desc: '薛定谔的猫',
+    key: 'wechat',
+    url: 'https://weixin.sogou.com/weixin?type=2&query=:keyword'
   },
   {
     name: '谷歌',
