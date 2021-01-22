@@ -15,16 +15,30 @@
 
     <div class="bar">
       <input
-        type="text"
+        v-if="current.key !== 'tts'"
         autofocus
         autocomplete="off"
         ref="keyword"
         v-model="keyword"
         :placeholder="current.desc"
-        @keyup.enter="searchIt">
+        @keyup.enter="searchIt"></input>
+      <template v-else>
+        <textarea
+          class="tts-input"
+          autofocus
+          autocomplete="off"
+          :disabled="ttsLoading"
+          ref="keyword"
+          v-model="keyword"
+          :placeholder="current.desc">
+        </textarea>
+        <i @click="downloadVoice"
+          class="material-icons tts-download">file_download</i>
+        <img src="/static/icons/loading.svg" class="tts-loading" :class="ttsLoading ? '' : 'hide'">
+      </template>
     </div>
 
-    <div class="suggest" v-if="current.key !== 'movie'">
+    <div class="suggest" v-if="current.key !== 'movie' && current.key !== 'tts'">
       <ul>
         <li
           v-for="(text, index) in suggest"
@@ -62,7 +76,9 @@ import { mapGetters } from 'vuex'
 import * as engineAPI from '../../api/engines'
 import translate from '../../api/google/translate'
 import suggest from '../../api/google/suggest'
+import speech from '../../api/azure/speech'
 import doubanMovieSearch from '../../api/douban/movie'
+import download from '../../api/download.js'
 
 export default {
   data() {
@@ -71,6 +87,7 @@ export default {
       current: {},
       keyword: '',
       suggest: [],
+      ttsLoading: false,
       styles: {
         hasCommonsites: '',
         noCommonsites: 'noCommonsites'
@@ -82,7 +99,6 @@ export default {
     engineAPI.getEngineIndx.then(idx => {
       this.current = this.engines[idx]
     })
-
   },
   watch: {
     keyword: function (text) {
@@ -100,10 +116,23 @@ export default {
     changeEngine(idx) {
       this.current = this.engines[idx]
       engineAPI.setEngineIndx(idx)
-      this.$refs.keyword.focus()
+      setTimeout(() => this.$refs.keyword.focus(), 100)
 
       this.suggest = []
       this.suggestKeywords(this.keyword)
+    },
+
+    // 下载 TTS 语音
+    downloadVoice() {
+      const text = this.keyword || this.current.desc
+      this.ttsLoading = true
+      speech(text).then(res => {
+        download(res, '配音.mp3')
+      }).catch(err => {
+        alert(err)
+      }).finally(() => {
+        this.ttsLoading = false
+      })
     },
 
     // 关键字推荐
@@ -308,7 +337,7 @@ export default {
   left: 50%;
 }
 
-input[type="text"] {
+input {
   display: block;
   width: 100%;
   height: 55px;
@@ -316,10 +345,48 @@ input[type="text"] {
   font-family: inherit;
   font-size: 16px;
   font-weight: inherit;
-  background: rgba(255,255,255,.84);
+  background: #fff;
   outline: none;
   border: 1px solid #eee;
   border-radius: 2px;
   color: rgba(0,0,0,.74)
 }
+
+.tts-input {
+  display: block;
+  width: 100%;
+  height: 300px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: inherit;
+  background: #fff;
+  outline: none;
+  border: 1px solid #eee;
+  border-radius: 2px;
+  color: rgba(0,0,0,.74)
+}
+
+.tts-download {
+  position: absolute;
+  top: 7px;
+  right: 10px;
+  color: grey;
+  cursor: pointer;
+}
+
+.tts-loading {
+  display: block;
+  position: absolute;
+  top: 95px;
+  left: 45%;
+  width: 100px;
+  color: grey;
+  cursor: pointer;
+}
+
+.hide {
+  display: none;
+}
+
 </style>

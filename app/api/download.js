@@ -1,12 +1,11 @@
 /**
- * 下载图片
- * @param {string} url web路径
- * @param {function} cb 回调函数
+ * 下载文件
  */
-const download = (url, cb) => {
+const download = (url, filename = 'download', cb) => {
+  const options = { url, filename }
   typeof cb === 'function' ?
-    chrome.downloads.download({ url }, cb) :
-    chrome.downloads.download({ url })
+    chrome.downloads.download(options, cb) :
+    chrome.downloads.download(options)
 }
 
 export default download
