@@ -67,7 +67,7 @@ export default {
 <style lang="scss" scoped>
 .box {
   width: 400px;
-  min-height: 53vh;
+  min-height: 400px;
   position: fixed;
   right: 5px;
   bottom: 60px;
@@ -78,7 +78,7 @@ export default {
   padding: 0 0 20px;
   & > img {
     width: 100%;
-    height: 34vh;
+    height: 250px;
     padding: 6px;
   }
   & > span {

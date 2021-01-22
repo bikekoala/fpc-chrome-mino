@@ -1,7 +1,7 @@
 /**
  * 下载文件
  */
-const download = (url, filename = 'download', cb) => {
+const download = (url, filename = null, cb) => {
   const options = { url, filename }
   typeof cb === 'function' ?
     chrome.downloads.download(options, cb) :

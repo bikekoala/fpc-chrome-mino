@@ -102,6 +102,7 @@ export default {
   },
   watch: {
     keyword: function (text) {
+      if (this.current.key === 'tts') return
       this.suggestKeywords(text)
     }
   },
