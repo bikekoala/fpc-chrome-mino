@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="title">更多（v0.2.1）</h3>
+    <h3 class="title">更多（v0.2.2）</h3>
     <div class="item">
       <span @click="clearLocalstore">清空缓存</span>
     </div>
@@ -22,8 +22,6 @@ export default {
       plugins: [
         // 油猴脚本 [Chrome 扩展]
         'https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=zh-CN',
-        // 记事本 [Chrome 扩展]
-        'https://chrome.google.com/webstore/detail/notepad/ffbhefmlcoihbjcmibbfkocmnaiacinp?hl=zh-CN',
         // 哔哩哔哩下载助手 [Chrome 扩展]
         'https://csser.top/',
         // Youtube 视频下载 [油猴脚本]

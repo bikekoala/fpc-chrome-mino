@@ -15,7 +15,7 @@
 
     <div class="bar">
       <input
-        v-if="current.key !== 'tts'"
+        v-if="!['tts', 'tts-new'].includes(current.key)"
         autofocus
         autocomplete="off"
         ref="keyword"
@@ -38,7 +38,7 @@
       </template>
     </div>
 
-    <div class="suggest" v-if="current.key !== 'movie' && current.key !== 'tts'">
+    <div class="suggest" v-if="!['movie', 'tts', 'tts-new'].includes(current.key)">
       <ul>
         <li
           v-for="(text, index) in suggest"
@@ -102,7 +102,7 @@ export default {
   },
   watch: {
     keyword: function (text) {
-      if (this.current.key === 'tts') return
+      if (['tts', 'tts-new'].includes(this.current.key)) return
       this.suggestKeywords(text)
     }
   },
@@ -127,8 +127,9 @@ export default {
     downloadVoice() {
       const text = this.keyword || this.current.desc
       this.ttsLoading = true
-      speech(text).then(res => {
-        download(res, '配音.mp3')
+      speech(text, this.current).then(res => {
+        if (this.current.key === 'tts') download(res, '配音.mp3')
+        if (this.current.key === 'tts-new') download(res, '配音字幕.zip')
       }).catch(err => {
         alert(err)
       }).finally(() => {

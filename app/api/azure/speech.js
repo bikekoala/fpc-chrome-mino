@@ -7,7 +7,26 @@ const mLocation = 'southeastasia'
 /**
  * 微软晓晓文字转语音
  */
-function speech(text) {
+function speech(text, engine = {}) {
+  // TODO 魔改版
+  if (engine.key === 'tts-new') {
+    return new Promise((resolve, reject) => {
+      const config = {
+        method: 'POST',
+        url: engine.url,
+        data: {
+          text
+        },
+        responseType: 'arraybuffer'
+      }
+      axios(config).then(res => {
+        toBase64(res.data, 'application/zip').then(base64 => {
+          resolve(base64)
+        })
+      }).catch(err => reject(err))
+    })
+  }
+
   return new Promise((resolve, reject) => {
       getAccessToken().then(res => {
         textToSpeech(res.data, text).then(res1 => {
@@ -19,9 +38,9 @@ function speech(text) {
   })
 }
 
-function toBase64(arraybuffer) {
+function toBase64(arraybuffer, type = 'audio/mpeg') {
   return new Promise((resolve) => {
-    const blob = new Blob([arraybuffer], { type: 'audio/mpeg' })
+    const blob = new Blob([arraybuffer], { type })
     var reader = new window.FileReader()
     reader.readAsDataURL(blob)
     reader.onloadend = function () {
