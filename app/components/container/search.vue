@@ -15,7 +15,7 @@
 
     <div class="bar">
       <input
-        v-if="!['tts', 'tts-new'].includes(current.key)"
+        v-if="current.key !== 'tts'"
         autofocus
         autocomplete="off"
         ref="keyword"
@@ -32,13 +32,13 @@
           v-model="keyword"
           :placeholder="current.desc">
         </textarea>
-        <i @click="downloadVoice"
+        <i @click="downloadCaptions"
           class="material-icons tts-download">file_download</i>
         <img src="/static/icons/loading.svg" class="tts-loading" :class="ttsLoading ? '' : 'hide'">
       </template>
     </div>
 
-    <div class="suggest" v-if="!['movie', 'tts', 'tts-new'].includes(current.key)">
+    <div class="suggest" v-if="!['movie', 'tts'].includes(current.key)">
       <ul>
         <li
           v-for="(text, index) in suggest"
@@ -76,7 +76,7 @@ import { mapGetters } from 'vuex'
 import * as engineAPI from '../../api/engines'
 import translate from '../../api/google/translate'
 import suggest from '../../api/google/suggest'
-import speech from '../../api/azure/speech'
+import { captionsDownload } from '../../api/api.js'
 import doubanMovieSearch from '../../api/douban/movie'
 import download from '../../api/download.js'
 
@@ -102,7 +102,7 @@ export default {
   },
   watch: {
     keyword: function (text) {
-      if (['tts', 'tts-new'].includes(this.current.key)) return
+      if ('tts' === this.current.key) return
       this.suggestKeywords(text)
     }
   },
@@ -123,13 +123,12 @@ export default {
       this.suggestKeywords(this.keyword)
     },
 
-    // 下载 TTS 语音
-    downloadVoice() {
+    // 下载字幕
+    downloadCaptions() {
       const text = this.keyword || this.current.desc
       this.ttsLoading = true
-      speech(text, this.current).then(res => {
-        if (this.current.key === 'tts') download(res, '配音.mp3')
-        if (this.current.key === 'tts-new') download(res, '配音字幕.zip')
+      captionsDownload(text, this.current).then(res => {
+        download(res, '配音字幕.zip')
       }).catch(err => {
         alert(err)
       }).finally(() => {
