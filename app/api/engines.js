@@ -29,8 +29,12 @@ export const allEngines = [
   {
     name: '字幕',
     desc: '我-\n步入丛林，希望活得更有意义。\n我-\n希望活得深刻，汲取所有生命之精髓！\n击溃所有非生命的事物...\n在生命终结时，不想感叹自己从没火【活】过...',
-    key: 'tts',
-    url: 'http://10.0.0.12:3001/captions/download'
+    key: 'captions'
+  },
+  {
+    name: '裁剪',
+    desc: '\\\\10.0.0.12\\abc\\薛定谔的猫\\素材',
+    key: 'videoscut'
   }
 ]
 

@@ -5,5 +5,5 @@ const root = document.createElement('div')
 document.getElementsByTagName('body')[0].appendChild(root)
 
 new Vue({
-    render: (h) => h(App)
+  render: (h) => h(App)
 }).$mount(root)

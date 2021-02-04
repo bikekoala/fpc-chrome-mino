@@ -15,30 +15,44 @@
 
     <div class="bar">
       <input
-        v-if="current.key !== 'tts'"
+        v-if="['video', 'movie'].includes(current.key)"
         autofocus
         autocomplete="off"
         ref="keyword"
         v-model="keyword"
         :placeholder="current.desc"
         @keyup.enter="searchIt"></input>
-      <template v-else>
-        <textarea
-          class="tts-input"
+
+      <template v-else-if="current.key === 'videoscut'">
+        <input
           autofocus
           autocomplete="off"
-          :disabled="ttsLoading"
+          v-model="keyword"
+          ref="keyword"
+          :disabled="loading"
+          :placeholder="current.desc"
+          @keyup.enter="cutVideos"></input>
+        </textarea>
+        <i @click="cutVideos" class="material-icons videoscut-action">content_cut</i>
+        <img src="/static/icons/loading.svg" class="loading videoscut-loading" :class="loading ? '' : 'hide'">
+      </template>
+
+      <template v-else>
+        <textarea
+          class="captions-input"
+          autofocus
+          autocomplete="off"
           ref="keyword"
           v-model="keyword"
+          :disabled="loading"
           :placeholder="current.desc">
         </textarea>
-        <i @click="downloadCaptions"
-          class="material-icons tts-download">file_download</i>
-        <img src="/static/icons/loading.svg" class="tts-loading" :class="ttsLoading ? '' : 'hide'">
+        <i @click="downloadCaptions" class="material-icons captions-download">file_download</i>
+        <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
       </template>
     </div>
 
-    <div class="suggest" v-if="!['movie', 'tts'].includes(current.key)">
+    <div class="suggest" v-if="!['movie', 'captions'].includes(current.key)">
       <ul>
         <li
           v-for="(text, index) in suggest"
@@ -76,7 +90,7 @@ import { mapGetters } from 'vuex'
 import * as engineAPI from '../../api/engines'
 import translate from '../../api/google/translate'
 import suggest from '../../api/google/suggest'
-import { captionsDownload } from '../../api/api.js'
+import { captionsDownload, videosCut } from '../../api/api.js'
 import doubanMovieSearch from '../../api/douban/movie'
 import download from '../../api/download.js'
 
@@ -87,7 +101,7 @@ export default {
       current: {},
       keyword: '',
       suggest: [],
-      ttsLoading: false,
+      loading: false,
       styles: {
         hasCommonsites: '',
         noCommonsites: 'noCommonsites'
@@ -102,7 +116,7 @@ export default {
   },
   watch: {
     keyword: function (text) {
-      if ('tts' === this.current.key) return
+      if ('captions' === this.current.key) return
       this.suggestKeywords(text)
     }
   },
@@ -123,16 +137,29 @@ export default {
       this.suggestKeywords(this.keyword)
     },
 
+    // 裁切视频
+    cutVideos() {
+      const path = this.keyword || this.current.desc
+      this.loading = true
+      videosCut(path).then(res => {
+        alert('裁剪成功：' + res)
+      }).catch(err => {
+        alert('裁剪失败：' + err)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+
     // 下载字幕
     downloadCaptions() {
       const text = this.keyword || this.current.desc
-      this.ttsLoading = true
-      captionsDownload(text, this.current).then(res => {
+      this.loading = true
+      captionsDownload(text).then(res => {
         download(res, '配音字幕.zip')
       }).catch(err => {
-        alert(err)
+        alert('下载失败：' + err)
       }).finally(() => {
-        this.ttsLoading = false
+        this.loading = false
       })
     },
 
@@ -340,7 +367,7 @@ export default {
 
 input {
   display: block;
-  width: 100%;
+  width: 90%;
   height: 55px;
   padding: 8px 12px;
   font-family: inherit;
@@ -348,16 +375,14 @@ input {
   font-weight: inherit;
   background: #fff;
   outline: none;
-  border: 1px solid #eee;
-  border-radius: 2px;
   color: rgba(0,0,0,.74)
 }
 
-.tts-input {
+.captions-input {
   display: block;
   width: 100%;
   height: 300px;
-  padding: 8px 12px;
+  padding: 15px 11px;
   font-family: inherit;
   font-size: 16px;
   font-weight: inherit;
@@ -368,19 +393,31 @@ input {
   color: rgba(0,0,0,.74)
 }
 
-.tts-download {
+.captions-download {
   position: absolute;
-  top: 7px;
+  top: 16px;
   right: 10px;
   color: grey;
   cursor: pointer;
 }
 
-.tts-loading {
+.videoscut-action {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: grey;
+  cursor: pointer;
+}
+
+.videoscut-loading {
+  top: -30px !important;
+}
+
+.loading {
   display: block;
   position: absolute;
   top: 95px;
-  left: 45%;
+  left: calc((100% - 100px ) / 2);
   width: 100px;
   color: grey;
   cursor: pointer;
