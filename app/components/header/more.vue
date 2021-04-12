@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="title">更多（v0.4.0）</h3>
+    <h3 class="title">更多（v0.5.0）</h3>
     <div class="item">
       <span @click="clearLocalstore">清空缓存</span>
     </div>

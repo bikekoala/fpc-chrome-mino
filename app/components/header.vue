@@ -13,7 +13,6 @@
         @settingHandler="handler('setting')"
         @close="closeDialog"/>
     </div>
-    <span class="time">{{time}}</span>
   </header>
 </template>
 
@@ -48,18 +47,7 @@ export default {
   computed: {
     ...mapGetters([
       'application'
-    ]),
-    time() {
-      setInterval(() => {
-        this.date = new Date()
-      }, 1000)
-      let hours = this.date.getHours(),
-        mins = this.date.getMinutes()
-
-      if (hours<10) hours = '0' + hours
-      if (mins<10) mins = '0' + mins
-      return hours + ':' + mins
-    }
+    ])
   },
   methods: {
     handler(name) {
@@ -97,14 +85,5 @@ export default {
       cursor: pointer;
     }
   }
-}
-.time {
-  width: 40px;
-  height: 100%;
-  display: inline-block;
-  margin: 0 12px;
-  color: #fff;
-  line-height: 38px;
-  letter-spacing: .5px;
 }
 </style>
