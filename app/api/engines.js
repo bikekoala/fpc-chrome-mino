@@ -27,13 +27,18 @@ export const allEngines = [
     url: 'https://search.douban.com/movie/subject_search?search_text=:keyword'
   },
   {
+    name: '目录',
+    desc: '测试-蒙娜丽莎\n测试-戴珍珠耳环的少女',
+    key: 'dirsmake'
+  },
+  {
     name: '字幕',
     desc: '我-\n步入丛林，希望活得更有意义。\n我-\n希望活得深刻，汲取所有生命之精髓！\n击溃所有非生命的事物...\n在生命终结时，不想感叹自己从没火【活】过...',
     key: 'captions'
   },
   {
     name: '裁剪',
-    desc: '\\\\10.0.0.12\\abc\\薛定谔的猫\\素材',
+    desc: '\\\\10.0.0.10\\剪辑\\项目\\科普\\素材\\2.18\\薛定谔的猫',
     key: 'videoscut'
   }
 ]

@@ -33,13 +33,25 @@
           :placeholder="current.desc"
           @keyup.enter="cutVideos"></input>
         </textarea>
-        <i @click="cutVideos" class="material-icons videoscut-action">content_cut</i>
+        <i @click="cutVideos" class="material-icons">content_cut</i>
         <img src="/static/icons/loading.svg" class="loading videoscut-loading" :class="loading ? '' : 'hide'">
       </template>
 
-      <template v-else>
+      <template v-else-if="current.key === 'dirsmake'">
         <textarea
-          class="captions-input"
+          autofocus
+          autocomplete="off"
+          ref="keyword"
+          v-model="keyword"
+          :disabled="loading"
+          :placeholder="current.desc">
+        </textarea>
+        <i @click="makeDirs" class="material-icons">view_list</i>
+        <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
+      </template>
+
+      <template v-else-if="current.key === 'captions'">
+        <textarea
           autofocus
           autocomplete="off"
           ref="keyword"
@@ -52,7 +64,7 @@
       </template>
     </div>
 
-    <div class="suggest" v-if="!['movie', 'captions'].includes(current.key)">
+    <div class="suggest" v-if="current.key === 'video'">
       <ul>
         <li
           v-for="(text, index) in suggest"
@@ -90,7 +102,7 @@ import { mapGetters } from 'vuex'
 import * as engineAPI from '../../api/engines'
 import translate from '../../api/google/translate'
 import suggest from '../../api/google/suggest'
-import { captionsDownload, videosCut } from '../../api/api.js'
+import { dirsMake, captionsDownload, videosCut } from '../../api/api.js'
 import doubanMovieSearch from '../../api/douban/movie'
 import download from '../../api/download.js'
 
@@ -116,7 +128,7 @@ export default {
   },
   watch: {
     keyword: function (text) {
-      if ('captions' === this.current.key) return
+      if (!['video', 'movie'].includes(this.current.key)) return
       this.suggestKeywords(text)
     }
   },
@@ -137,14 +149,14 @@ export default {
       this.suggestKeywords(this.keyword)
     },
 
-    // 裁切视频
-    cutVideos() {
-      const path = this.keyword || this.current.desc
+    // 创建目录
+    makeDirs() {
+      const titles = this.keyword || this.current.desc
       this.loading = true
-      videosCut(path).then(res => {
-        alert('裁剪成功：' + res)
+      dirsMake(titles).then(res => {
+        alert('创建成功：' + res)
       }).catch(err => {
-        alert('裁剪失败：' + err)
+        alert('创建失败：' + err)
       }).finally(() => {
         this.loading = false
       })
@@ -158,6 +170,19 @@ export default {
         download(res, '配音字幕.zip')
       }).catch(err => {
         alert('下载失败：' + err)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+
+    // 裁切视频
+    cutVideos() {
+      const path = this.keyword || this.current.desc
+      this.loading = true
+      videosCut(path).then(res => {
+        alert('裁剪成功：' + res)
+      }).catch(err => {
+        alert('裁剪失败：' + err)
       }).finally(() => {
         this.loading = false
       })
@@ -378,7 +403,7 @@ input {
   color: rgba(0,0,0,.74)
 }
 
-.captions-input {
+textarea {
   display: block;
   width: 100%;
   height: 300px;
@@ -393,26 +418,6 @@ input {
   color: rgba(0,0,0,.74)
 }
 
-.captions-download {
-  position: absolute;
-  top: 16px;
-  right: 10px;
-  color: grey;
-  cursor: pointer;
-}
-
-.videoscut-action {
-  position: absolute;
-  top: 16px;
-  right: 10px;
-  color: grey;
-  cursor: pointer;
-}
-
-.videoscut-loading {
-  top: -30px !important;
-}
-
 .loading {
   display: block;
   position: absolute;
@@ -425,6 +430,18 @@ input {
 
 .hide {
   display: none;
+}
+
+.material-icons {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: grey;
+  cursor: pointer;
+}
+
+.videoscut-loading {
+  top: -30px !important;
 }
 
 </style>
