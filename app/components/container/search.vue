@@ -23,21 +23,7 @@
         :placeholder="current.desc"
         @keyup.enter="searchIt"></input>
 
-      <template v-else-if="current.key === 'videoscut'">
-        <input
-          autofocus
-          autocomplete="off"
-          v-model="keyword"
-          ref="keyword"
-          :disabled="loading"
-          :placeholder="current.desc"
-          @keyup.enter="cutVideos"></input>
-        </textarea>
-        <i @click="cutVideos" class="material-icons">content_cut</i>
-        <img src="/static/icons/loading.svg" class="loading videoscut-loading" :class="loading ? '' : 'hide'">
-      </template>
-
-      <template v-else-if="current.key === 'dirsmake'">
+      <template v-else-if="current.key === 'speech'">
         <textarea
           autofocus
           autocomplete="off"
@@ -46,20 +32,7 @@
           :disabled="loading"
           :placeholder="current.desc">
         </textarea>
-        <i @click="makeDirs" class="material-icons">view_list</i>
-        <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
-      </template>
-
-      <template v-else-if="current.key === 'captions'">
-        <textarea
-          autofocus
-          autocomplete="off"
-          ref="keyword"
-          v-model="keyword"
-          :disabled="loading"
-          :placeholder="current.desc">
-        </textarea>
-        <i @click="downloadCaptions" class="material-icons captions-download">file_download</i>
+        <i @click="downloadSubtitles" class="material-icons">file_download</i>
         <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
       </template>
     </div>
@@ -102,7 +75,7 @@ import { mapGetters } from 'vuex'
 import * as engineAPI from '../../api/engines'
 import translate from '../../api/google/translate'
 import suggest from '../../api/google/suggest'
-import { dirsMake, captionsDownload, videosCut } from '../../api/api.js'
+import { subtitlesDownload } from '../../api/api.js'
 import doubanMovieSearch from '../../api/douban/movie'
 import download from '../../api/download.js'
 
@@ -149,40 +122,14 @@ export default {
       this.suggestKeywords(this.keyword)
     },
 
-    // 创建目录
-    makeDirs() {
-      const titles = this.keyword || this.current.desc
-      this.loading = true
-      dirsMake(titles).then(res => {
-        alert('创建成功：' + res)
-      }).catch(err => {
-        alert('创建失败：' + err)
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-
     // 下载字幕
-    downloadCaptions() {
+    downloadSubtitles() {
       const text = this.keyword || this.current.desc
       this.loading = true
-      captionsDownload(text).then(res => {
+      subtitlesDownload(text).then(res => {
         download(res, '配音字幕.zip')
       }).catch(err => {
         alert('下载失败：' + err)
-      }).finally(() => {
-        this.loading = false
-      })
-    },
-
-    // 裁切视频
-    cutVideos() {
-      const path = this.keyword || this.current.desc
-      this.loading = true
-      videosCut(path).then(res => {
-        alert('裁剪成功：' + res)
-      }).catch(err => {
-        alert('裁剪失败：' + err)
       }).finally(() => {
         this.loading = false
       })
@@ -438,10 +385,6 @@ textarea {
   right: 10px;
   color: grey;
   cursor: pointer;
-}
-
-.videoscut-loading {
-  top: -30px !important;
 }
 
 </style>
