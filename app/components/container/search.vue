@@ -32,7 +32,50 @@
           :disabled="loading"
           :placeholder="current.desc">
         </textarea>
-        <i @click="downloadSubtitles" class="material-icons">file_download</i>
+        <i @click="downloadSpeechSubtitles" class="material-icons speech-icon-download-subtitles">file_download</i>
+        <i @click="downloadSpeechAudio" class="material-icons speech-icon-download-audio">cloud_download</i>
+        <i @click="speakSpeech" class="material-icons speech-icon-play">play_arrow</i>
+        <select class="speech-option name" v-model="options.speech.name">
+          <option disabled>语音</option>
+          <option v-for="option in current.options" :value="option.value">{{option.text}}</option>
+        </select>
+        <select class="speech-option style" v-model="options.speech.style">
+          <option disabled>风格</option>
+          <option v-for="style in current.options.find(v => v.value === options.speech.name).styles" :value="style[0]">{{style[1]}}</option>
+        </select>
+        <select class="speech-option rate" v-model="options.speech.rate">
+          <option disabled>语速</option>
+          <option value="-100%">0.0</option>
+          <option value="-80%">0.2</option>
+          <option value="-60%">0.4</option>
+          <option value="-40%">0.6</option>
+          <option value="-20%">0.8</option>
+          <option value="0%" selected>1.0</option>
+          <option value="20%">1.2</option>
+          <option value="40%">1.4</option>
+          <option value="60%">1.6</option>
+          <option value="80%">1.8</option>
+          <option value="100%">2.0</option>
+          <option value="120%">2.2</option>
+          <option value="140%">2.4</option>
+          <option value="160%">2.6</option>
+          <option value="180%">2.8</option>
+          <option value="200%">3.0</option>
+        </select>
+        <select class="speech-option pitch" v-model="options.speech.pitch">
+          <option disabled>音调</option>
+          <option value="-50%">0.0</option>
+          <option value="-60%">0.2</option>
+          <option value="-70%">0.4</option>
+          <option value="-80%">0.6</option>
+          <option value="-90%">0.8</option>
+          <option value="0%" selected>1.0</option>
+          <option value="10%">1.2</option>
+          <option value="20%">1.4</option>
+          <option value="30%">1.6</option>
+          <option value="40%">1.8</option>
+          <option value="50%">2.0</option>
+        </select>
         <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
       </template>
     </div>
@@ -75,9 +118,11 @@ import { mapGetters } from 'vuex'
 import * as engineAPI from '../../api/engines'
 import translate from '../../api/google/translate'
 import suggest from '../../api/google/suggest'
-import { subtitlesDownload } from '../../api/api.js'
+import { speechSubtitlesDownload, speechSpeak } from '../../api/api.js'
 import doubanMovieSearch from '../../api/douban/movie'
 import download from '../../api/download.js'
+
+const mSpeechAudio = new Audio()
 
 export default {
   data() {
@@ -85,6 +130,14 @@ export default {
       engines: null,
       current: {},
       keyword: '',
+      options: {
+        speech: {
+          name: 'zh-CN-XiaoxiaoNeural',
+          style: '',
+          rate: '0%',
+          pitch: '0%'
+        }
+      },
       suggest: [],
       loading: false,
       styles: {
@@ -122,11 +175,41 @@ export default {
       this.suggestKeywords(this.keyword)
     },
 
+    // 播放配音
+    speakSpeech() {
+      const data = this._getSpeechRequestData()
+
+      this.loading = true
+      mSpeechAudio.pause()
+      speechSpeak(data).then(res => {
+        mSpeechAudio.src = res
+        mSpeechAudio.play()
+      }).catch(err => {
+        alert('播放失败：' + err)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+
+    // 下载配音
+    downloadSpeechAudio() {
+      const data = this._getSpeechRequestData()
+
+      this.loading = true
+      speechSpeak(data).then(res => {
+        download(res, '配音.mp3')
+      }).catch(err => {
+        alert('下载失败：' + err)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+
     // 下载字幕
-    downloadSubtitles() {
+    downloadSpeechSubtitles() {
       const text = this.keyword || this.current.desc
       this.loading = true
-      subtitlesDownload(text).then(res => {
+      speechSubtitlesDownload(text).then(res => {
         download(res, '配音字幕.zip')
       }).catch(err => {
         alert('下载失败：' + err)
@@ -193,6 +276,20 @@ export default {
     redirectDouban(id) {
       const url = `https://movie.douban.com/subject/${id}/`
       window.location.href = url
+    },
+
+    // 获取配音参数
+    _getSpeechRequestData() {
+      const data = this.options.speech
+      data.text = this.keyword || this.current.desc
+
+      const style = this.current.options.find(v => v.value === data.name)
+        .styles.find(v => v[0] === data.style)
+      if (!style) {
+        data.style = ''
+      }
+
+      return data
     }
   }
 };
@@ -379,7 +476,7 @@ textarea {
   display: none;
 }
 
-.material-icons {
+.speech-icon-download-subtitles {
   position: absolute;
   top: 16px;
   right: 10px;
@@ -387,4 +484,44 @@ textarea {
   cursor: pointer;
 }
 
+.speech-icon-download-audio {
+  position: absolute;
+  top: 16px;
+  right: 50px;
+  color: grey;
+  cursor: pointer;
+}
+
+.speech-icon-play {
+  position: absolute;
+  top: 16px;
+  right: 90px;
+  color: grey;
+  cursor: pointer;
+}
+
+.speech-option {
+  position: absolute;
+  top: 270px;
+  right: 0;
+  cursor: pointer;
+  border: none;
+  color: grey;
+
+  &.name {
+    right: 10px;
+  }
+
+  &.style {
+    right: 65px;
+  }
+
+  &.rate {
+    right: 120px;
+  }
+
+  &.pitch {
+    right: 175px;
+  }
+}
 </style>

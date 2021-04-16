@@ -7,20 +7,28 @@ const mClient = axios.create({
 })
 
 /**
+ * 播放配音
+ */
+function speechSpeak(data) {
+  return new Promise((resolve, reject) => {
+    const config = {
+      method: 'POST',
+      url: `/speech/speak`,
+      data,
+      responseType: 'arraybuffer'
+    }
+    mClient(config).then(res => {
+      _toBase64(res.data).then(base64 => {
+        resolve(base64)
+      })
+    }).catch(err => reject(err))
+  })
+}
+
+/**
  * 字幕下载
  */
-function subtitlesDownload(text) {
-  const _toBase64 = (arraybuffer, type = 'audio/mpeg') => {
-    return new Promise((resolve) => {
-      const blob = new Blob([arraybuffer], { type })
-      var reader = new window.FileReader()
-      reader.readAsDataURL(blob)
-      reader.onloadend = function () {
-        resolve(reader.result)
-      }
-    })
-  }
-
+function speechSubtitlesDownload(text) {
   return new Promise((resolve, reject) => {
     const config = {
       method: 'POST',
@@ -38,6 +46,17 @@ function subtitlesDownload(text) {
   })
 }
 
+function _toBase64(arraybuffer, type = 'audio/mpeg') {
+  return new Promise((resolve) => {
+    const blob = new Blob([arraybuffer], { type })
+    var reader = new window.FileReader()
+    reader.readAsDataURL(blob)
+    reader.onloadend = function () {
+      resolve(reader.result)
+    }
+  })
+}
+
 function _fmt(client) {
   return new Promise((resolve, reject) => {
     client.then(res => {
@@ -50,5 +69,6 @@ function _fmt(client) {
 }
 
 export {
-  subtitlesDownload
+  speechSpeak,
+  speechSubtitlesDownload
 }
