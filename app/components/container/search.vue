@@ -207,9 +207,10 @@ export default {
 
     // 下载字幕
     downloadSpeechSubtitles() {
-      const text = this.keyword || this.current.desc
+      const data = this._getSpeechRequestData()
+
       this.loading = true
-      speechSubtitlesDownload(text).then(res => {
+      speechSubtitlesDownload(data).then(res => {
         download(res, '配音字幕.zip')
       }).catch(err => {
         alert('下载失败：' + err)

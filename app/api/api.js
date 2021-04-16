@@ -28,14 +28,12 @@ function speechSpeak(data) {
 /**
  * 字幕下载
  */
-function speechSubtitlesDownload(text) {
+function speechSubtitlesDownload(data) {
   return new Promise((resolve, reject) => {
     const config = {
       method: 'POST',
       url: `/speech/subtitles`,
-      data: {
-        text
-      },
+      data,
       responseType: 'arraybuffer'
     }
     mClient(config).then(res => {
