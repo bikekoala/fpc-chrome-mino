@@ -514,15 +514,15 @@ textarea {
   }
 
   &.style {
-    right: 65px;
+    right: 105px;
   }
 
   &.rate {
-    right: 120px;
+    right: 160px;
   }
 
   &.pitch {
-    right: 175px;
+    right: 215px;
   }
 }
 </style>

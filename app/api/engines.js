@@ -32,7 +32,7 @@ export const allEngines = [
     key: 'speech',
     options: [
       {
-        text: '晓晓',
+        text: '普通话-晓晓',
         value: 'zh-CN-XiaoxiaoNeural',
         styles: [
           ['', '正常'],
@@ -53,14 +53,14 @@ export const allEngines = [
         ]
       },
       {
-        text: '晓悠',
+        text: '普通话-晓悠',
         value: 'zh-CN-XiaoyouNeural',
         styles: [
           ['', '正常'],
         ]
       },
       {
-        text: '晓涵',
+        text: '普通话-晓涵',
         value: 'zh-CN-XiaohanNeural',
         styles: [
           ['', '正常'],
@@ -77,7 +77,7 @@ export const allEngines = [
         ]
       },
       {
-        text: '晓墨',
+        text: '普通话-晓墨',
         value: 'zh-CN-XiaomoNeural',
         styles: [
           ['', '正常'],
@@ -92,7 +92,7 @@ export const allEngines = [
         ]
       },
       {
-        text: '晓睿',
+        text: '普通话-晓睿',
         value: 'zh-CN-XiaoruiNeural',
         styles: [
           ['', '正常'],
@@ -103,7 +103,7 @@ export const allEngines = [
         ]
       },
       {
-        text: '晓萱',
+        text: '普通话-晓萱',
         value: 'zh-CN-XiaoxuanNeural',
         styles: [
           ['', '正常'],
@@ -118,21 +118,7 @@ export const allEngines = [
         ]
       },
       {
-        text: '慧慧',
-        value: 'zh-CN-HuihuiRUS',
-        styles: [
-          ['', '正常'],
-        ]
-      },
-      {
-        text: '瑶瑶',
-        value: 'zh-CN-Yaoyao',
-        styles: [
-          ['', '正常'],
-        ]
-      },
-      {
-        text: '云扬',
+        text: '普通话-云扬',
         value: 'zh-CN-YunyangNeural',
         styles: [
           ['', '正常'],
@@ -141,7 +127,7 @@ export const allEngines = [
         ]
       },
       {
-        text: '云野',
+        text: '普通话-云野',
         value: 'zh-CN-YunyeNeural',
         styles: [
           ['', '正常'],
@@ -155,7 +141,7 @@ export const allEngines = [
         ]
       },
       {
-        text: '云希',
+        text: '普通话-云希',
         value: 'zh-CN-YunxiNeural',
         styles: [
           ['', '正常'],
@@ -172,12 +158,59 @@ export const allEngines = [
         ]
       },
       {
-        text: '康康',
-        value: 'zh-CN-Kangkang',
+        text: '英音-Mia',
+        value: 'en-GB-MiaNeural',
         styles: [
           ['', '正常'],
         ]
-      }
+      },
+      {
+        text: '英音-Libby',
+        value: 'en-GB-LibbyNeural',
+        styles: [
+          ['', '正常'],
+        ]
+      },
+      {
+        text: '英音-Ryan',
+        value: 'en-GB-RyanNeural',
+        styles: [
+          ['', '正常'],
+        ]
+      },
+      {
+        text: '美音-Jenny',
+        value: 'en-US-JennyNeural',
+        styles: [
+          ['', '正常'],
+          ['newscast', '新闻'],
+          ['chat', '聊天'],
+          ['assistant', '助理'],
+          ['customerservice', '客服'],
+        ]
+      },
+      {
+        text: '美音-Guy',
+        value: 'en-US-GuyNeural',
+        styles: [
+          ['', '正常'],
+          ['newscast', '新闻'],
+        ]
+      },
+      {
+        text: '美音-Aria',
+        value: 'en-US-AriaNeural',
+        styles: [
+          ['', '正常'],
+          ['cheerful', '欢快'],
+          ['gentle', '温和'],
+          ['newscast-casual', '新闻C'],
+          ['newscast-formal', '新闻F'],
+          ['chat', '聊天'],
+          ['customerservice', '客服'],
+          ['narration', '叙述'],
+        ]
+      },
     ]
   }
 ]
