@@ -6,8 +6,8 @@ const path = './static/sites'
 const application = [
   {
     name: '工作流',
-    link: 'http://fpc.gzif.net/admin/#/entry',
-    icon: `${path}/fpc.png`
+    link: 'http://admin.wfms.gzdcf.cn/',
+    icon: `${path}/wfms.png`
   }
 ]
 
