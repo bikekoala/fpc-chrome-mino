@@ -15,13 +15,13 @@
 
     <div class="bar">
       <input
-        v-if="['video', 'movie'].includes(current.key)"
+        v-if="['baidu', 'video', 'movie'].includes(current.key)"
         autofocus
         autocomplete="off"
         ref="keyword"
         v-model="keyword"
         :placeholder="current.desc"
-        @keyup.enter="searchIt"></input>
+        @keyup.enter="searchIt">
 
       <template v-else-if="current.key === 'speech'">
         <textarea
@@ -80,7 +80,7 @@
       </template>
     </div>
 
-    <div class="suggest" v-if="current.key === 'video'">
+    <div class="suggest" v-if="['baidu', 'video'].includes(current.key)">
       <ul>
         <li
           v-for="(text, index) in suggest"
@@ -154,7 +154,7 @@ export default {
   },
   watch: {
     keyword: function (text) {
-      if (!['video', 'movie'].includes(this.current.key)) return
+      if (!['baidu', 'video', 'movie'].includes(this.current.key)) return
       this.suggestKeywords(text)
     }
   },
@@ -169,7 +169,7 @@ export default {
     changeEngine(idx) {
       this.current = this.engines[idx]
       engineAPI.setEngineIndx(idx)
-      setTimeout(() => this.$refs.keyword.focus(), 100)
+      setTimeout(() => this.$refs.keyword && this.$refs.keyword.focus(), 100)
 
       this.suggest = []
       this.suggestKeywords(this.keyword)
@@ -393,6 +393,10 @@ export default {
     border: 1px solid #ddd;
     border-top: 0 none;
 
+    & li:first-child {
+      border-top: 1px solid #eee;
+    }
+
     & li {
       overflow: hidden;
       border-bottom: 1px solid #eee;
@@ -407,6 +411,7 @@ export default {
         display: block;
         overflow: hidden;
         padding: 6px;
+        padding-left: 12px;
         zoom: 1;
 
         & > img {

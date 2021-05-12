@@ -6,6 +6,12 @@ import KEYS from './storekeys'
  */
 export const allEngines = [
   {
+    name: '百度',
+    desc: '',
+    key: 'baidu',
+    url: 'https://www.baidu.com/s?wd=:keyword'
+  },
+  {
     name: '素材',
     desc: '美国 国旗',
     key: 'video',
