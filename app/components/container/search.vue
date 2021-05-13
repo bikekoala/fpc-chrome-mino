@@ -78,6 +78,24 @@
         </select>
         <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
       </template>
+
+      <template v-else-if="current.key === 'videoslice'">
+        <input
+            autofocus
+            autocomplete="off"
+            v-model="options.videoslice.source"
+            ref="keyword"
+            :disabled="loading"
+            :placeholder="current.desc[0]">
+          <textarea
+              autocomplete="off"
+              v-model="options.videoslice.config"
+              :disabled="loading"
+              :placeholder="current.desc[1]">
+          </textarea>
+        <i @click="sliceVideo" class="material-icons videoslice-icon-action">content_cut</i>
+        <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
+      </template>
     </div>
 
     <div class="suggest" v-if="['baidu', 'video'].includes(current.key)">
@@ -118,7 +136,7 @@ import { mapGetters } from 'vuex'
 import * as engineAPI from '../../api/engines'
 import translate from '../../api/google/translate'
 import suggest from '../../api/google/suggest'
-import { speechSubtitlesDownload, speechSpeak } from '../../api/api.js'
+import { speechSubtitlesDownload, speechSpeak, videoSlice } from '../../api/api.js'
 import doubanMovieSearch from '../../api/douban/movie'
 import download from '../../api/download.js'
 
@@ -136,7 +154,11 @@ export default {
           style: '',
           rate: '0%',
           pitch: '0%'
-        }
+        },
+        videoslice: {
+          source: '',
+          config: ''
+        },
       },
       suggest: [],
       loading: false,
@@ -214,6 +236,22 @@ export default {
         download(res, '配音字幕.zip')
       }).catch(err => {
         alert('下载失败：' + err)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+
+    // 裁切视频
+    sliceVideo() {
+      const source = this.options.videoslice.source.trim()
+      const config = this.options.videoslice.config.trim()
+      if (!source || !config) return alert('视频路径或片段配置不能为空')
+
+      this.loading = true
+      videoSlice(source, config).then(res => {
+        alert('裁剪成功：' + res)
+      }).catch(err => {
+        alert('裁剪失败：' + err)
       }).finally(() => {
         this.loading = false
       })
@@ -464,7 +502,6 @@ textarea {
   background: #fff;
   outline: none;
   border: 1px solid #eee;
-  border-radius: 2px;
   color: rgba(0,0,0,.74)
 }
 
@@ -529,5 +566,13 @@ textarea {
   &.pitch {
     right: 215px;
   }
+}
+
+.videoslice-icon-action {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: grey;
+  cursor: pointer;
 }
 </style>

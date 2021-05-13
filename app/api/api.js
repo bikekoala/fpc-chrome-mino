@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const mClient = axios.create({
   baseURL: 'http://10.10.0.10:3001',
-  // baseURL: 'http://localhost:3001',
+  //baseURL: 'http://localhost:3001',
   timeout: 60000 * 10
 })
 
@@ -44,6 +44,13 @@ function speechSubtitlesDownload(data) {
   })
 }
 
+/**
+ * 视频裁剪
+ */
+function videoSlice(source, config) {
+  return _fmt(mClient.post('/video/slice', { source, config }))
+}
+
 function _toBase64(arraybuffer, type = 'audio/mpeg') {
   return new Promise((resolve) => {
     const blob = new Blob([arraybuffer], { type })
@@ -68,5 +75,6 @@ function _fmt(client) {
 
 export {
   speechSpeak,
-  speechSubtitlesDownload
+  speechSubtitlesDownload,
+  videoSlice
 }
