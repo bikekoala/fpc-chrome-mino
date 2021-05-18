@@ -10,45 +10,69 @@ const mClient = axios.create({
  * 播放配音
  */
 function speechSpeak(data) {
-  return new Promise((resolve, reject) => {
-    const config = {
-      method: 'POST',
-      url: `/speech/speak`,
-      data,
-      responseType: 'arraybuffer'
-    }
-    mClient(config).then(res => {
-      _toBase64(res.data).then(base64 => {
-        resolve(base64)
-      })
-    }).catch(err => reject(err))
-  })
+  return _fmtBuffer(mClient({
+    method: 'POST',
+    url: `/speech/speak`,
+    data,
+    responseType: 'arraybuffer'
+  }), 'audio/mpeg')
 }
 
 /**
- * 字幕下载
+ * 配音字幕下载
  */
 function speechSubtitlesDownload(data) {
-  return new Promise((resolve, reject) => {
-    const config = {
-      method: 'POST',
-      url: `/speech/subtitles`,
-      data,
-      responseType: 'arraybuffer'
-    }
-    mClient(config).then(res => {
-      _toBase64(res.data, 'application/zip').then(base64 => {
-        resolve(base64)
-      })
-    }).catch(err => reject(err))
-  })
+  return _fmtBuffer(mClient({
+    method: 'POST',
+    url: `/speech/subtitles`,
+    data,
+    responseType: 'arraybuffer'
+  }), 'application/zip')
+}
+
+/**
+ * 音频字幕下载
+ */
+function audioSubtitlesDownload(data) {
+  return _fmtBuffer(mClient({
+    method: 'POST',
+    url: `/audio/subtitles`,
+    data,
+    responseType: 'arraybuffer'
+  }), 'application/octet-stream')
 }
 
 /**
  * 视频裁剪
  */
 function videoSlice(source, config) {
-  return _fmt(mClient.post('/video/slice', { source, config }))
+  return _fmtNormal(mClient.post('/video/slice', { source, config }))
+}
+
+function _fmtBuffer(client, type) {
+  return new Promise((resolve, reject) => {
+    client.then(res => {
+      const data = _buffer2json(res.data)
+      if (data.message) {
+        reject(data.message)
+      } else {
+        _toBase64(res.data, type).then(base64 => {
+          resolve(base64)
+        })
+      }
+    }).catch(err => reject(err))
+  })
+}
+
+function _fmtNormal(client) {
+  return new Promise((resolve, reject) => {
+    client.then(res => {
+      if (res.data.code === 200) return resolve(res.data.data)
+      else return reject(res.data.message)
+    }).catch(err => {
+      return reject(err)
+    })
+  })
 }
 
 function _toBase64(arraybuffer, type = 'audio/mpeg') {
@@ -62,19 +86,20 @@ function _toBase64(arraybuffer, type = 'audio/mpeg') {
   })
 }
 
-function _fmt(client) {
-  return new Promise((resolve, reject) => {
-    client.then(res => {
-      if (res.data.code === 200) return resolve(res.data.data)
-      else return reject(res.data.message)
-    }).catch(err => {
-      return reject(err)
-    })
-  })
+function _buffer2json(buffer) {
+  const uint8Data = new Uint8Array(buffer)
+  const decodedString = String.fromCharCode.apply(null, uint8Data)
+
+  try {
+    return JSON.parse(decodedString)
+  } catch (e) {
+    return buffer
+  }
 }
 
 export {
   speechSpeak,
   speechSubtitlesDownload,
+  audioSubtitlesDownload,
   videoSlice
 }

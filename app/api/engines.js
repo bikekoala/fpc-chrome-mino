@@ -7,7 +7,7 @@ import KEYS from './storekeys'
 export const allEngines = [
   {
     name: '百度',
-    desc: '',
+    desc: '少用百度 :-P',
     key: 'baidu',
     url: 'https://www.baidu.com/s?wd=:keyword'
   },
@@ -34,7 +34,7 @@ export const allEngines = [
   },
   {
     name: '配音',
-    desc: '我-\n步入丛林，希望活得更有意义。\n我-\n希望活得深刻，汲取所有生命之精髓！\n击溃所有非生命的事物...\n在生命终结时，不想感叹自己从没火【活】过...',
+    desc: '我-\n步入丛林，希望活得更有意义。\n我-\n希望活得深刻，汲取所有生命之精髓！\n击溃所有非生命的事物...\n在生命终结时，不想感叹自己从没活【火】过...',
     key: 'speech',
     options: [
       {
@@ -163,6 +163,7 @@ export const allEngines = [
           ['embarrassed', '犹豫'],
         ]
       },
+      /*
       {
         text: '英音-Mia',
         value: 'en-GB-MiaNeural',
@@ -184,6 +185,7 @@ export const allEngines = [
           ['', '正常'],
         ]
       },
+      */
       {
         text: '美音-Jenny',
         value: 'en-US-JennyNeural',
@@ -220,6 +222,11 @@ export const allEngines = [
     ]
   },
   {
+    name: '字幕',
+    desc: 'Q: 如何提高字幕文本的准确性？\nA: 将台词粘贴到这里！',
+    key: 'subtitles'
+  },
+  {
     name: '视频切割',
     desc: [
       '视频路径：\\\\f1\\影视-只读\\movies\\菊次郎的夏天 (1999).mp4',
@@ -238,7 +245,7 @@ export const getEngineIndx = store.getData(KEYS.ENGINIE).then(data => {
   // 设置 谷歌
   if (store.isEmptyData(data)) {
     const defaults = {
-      [KEYS.ENGINIE]: 2
+      [KEYS.ENGINIE]: 0
     }
     store.storeData(defaults)
     return defaults[KEYS.ENGINIE]

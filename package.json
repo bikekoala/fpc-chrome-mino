@@ -1,6 +1,6 @@
 {
   "name": "fpc-mino",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "private": true,
   "description": "a chrome-extension for new tab",
   "author": "https://github.com/bikekoala",

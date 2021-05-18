@@ -24,76 +24,101 @@
         @keyup.enter="searchIt">
 
       <template v-else-if="current.key === 'speech'">
-        <textarea
-          autofocus
-          autocomplete="off"
-          ref="keyword"
-          v-model="keyword"
-          :disabled="loading"
-          :placeholder="current.desc">
-        </textarea>
-        <i @click="downloadSpeechSubtitles" class="material-icons speech-icon-download-subtitles">file_download</i>
-        <i @click="downloadSpeechAudio" class="material-icons speech-icon-download-audio">cloud_download</i>
-        <i @click="speakSpeech" class="material-icons speech-icon-play">play_arrow</i>
-        <select class="speech-option name" v-model="options.speech.name">
-          <option disabled>语音</option>
-          <option v-for="option in current.options" :value="option.value">{{option.text}}</option>
-        </select>
-        <select class="speech-option style" v-model="options.speech.style">
-          <option disabled>风格</option>
-          <option v-for="style in current.options.find(v => v.value === options.speech.name).styles" :value="style[0]">{{style[1]}}</option>
-        </select>
-        <select class="speech-option rate" v-model="options.speech.rate">
-          <option disabled>语速</option>
-          <option value="-100%">0.0</option>
-          <option value="-80%">0.2</option>
-          <option value="-60%">0.4</option>
-          <option value="-40%">0.6</option>
-          <option value="-20%">0.8</option>
-          <option value="0%" selected>1.0</option>
-          <option value="20%">1.2</option>
-          <option value="40%">1.4</option>
-          <option value="60%">1.6</option>
-          <option value="80%">1.8</option>
-          <option value="100%">2.0</option>
-          <option value="120%">2.2</option>
-          <option value="140%">2.4</option>
-          <option value="160%">2.6</option>
-          <option value="180%">2.8</option>
-          <option value="200%">3.0</option>
-        </select>
-        <select class="speech-option pitch" v-model="options.speech.pitch">
-          <option disabled>音调</option>
-          <option value="-50%">0.0</option>
-          <option value="-60%">0.2</option>
-          <option value="-70%">0.4</option>
-          <option value="-80%">0.6</option>
-          <option value="-90%">0.8</option>
-          <option value="0%" selected>1.0</option>
-          <option value="10%">1.2</option>
-          <option value="20%">1.4</option>
-          <option value="30%">1.6</option>
-          <option value="40%">1.8</option>
-          <option value="50%">2.0</option>
-        </select>
+        <div class="textarea-container">
+          <textarea
+              autofocus
+              autocomplete="off"
+              ref="keyword"
+              v-model="keyword"
+              :disabled="loading"
+              :placeholder="current.desc">
+          </textarea>
+          <i @click="downloadSpeechSubtitles" class="material-icons speech-icon-download-subtitles">file_download</i>
+          <i @click="downloadSpeechAudio" class="material-icons speech-icon-download-audio">cloud_download</i>
+          <i @click="speakSpeech" class="material-icons speech-icon-play">play_arrow</i>
+          <select class="speech-option name" v-model="options.speech.name">
+            <option disabled>语音</option>
+            <option v-for="option in current.options" :value="option.value">{{option.text}}</option>
+          </select>
+          <select class="speech-option style" v-model="options.speech.style">
+            <option disabled>风格</option>
+            <option v-for="style in current.options.find(v => v.value === options.speech.name).styles" :value="style[0]">{{style[1]}}</option>
+          </select>
+          <select class="speech-option rate" v-model="options.speech.rate">
+            <option disabled>语速</option>
+            <option value="-100%">0.0</option>
+            <option value="-80%">0.2</option>
+            <option value="-60%">0.4</option>
+            <option value="-40%">0.6</option>
+            <option value="-20%">0.8</option>
+            <option value="0%" selected>1.0</option>
+            <option value="20%">1.2</option>
+            <option value="40%">1.4</option>
+            <option value="60%">1.6</option>
+            <option value="80%">1.8</option>
+            <option value="100%">2.0</option>
+            <option value="120%">2.2</option>
+            <option value="140%">2.4</option>
+            <option value="160%">2.6</option>
+            <option value="180%">2.8</option>
+            <option value="200%">3.0</option>
+          </select>
+          <select class="speech-option pitch" v-model="options.speech.pitch">
+            <option disabled>音调</option>
+            <option value="-50%">0.0</option>
+            <option value="-60%">0.2</option>
+            <option value="-70%">0.4</option>
+            <option value="-80%">0.6</option>
+            <option value="-90%">0.8</option>
+            <option value="0%" selected>1.0</option>
+            <option value="10%">1.2</option>
+            <option value="20%">1.4</option>
+            <option value="30%">1.6</option>
+            <option value="40%">1.8</option>
+            <option value="50%">2.0</option>
+          </select>
+        </div>
+        <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
+      </template>
+
+      <template v-else-if="current.key === 'subtitles'">
+        <div class="textarea-container">
+          <textarea
+              autofocus
+              autocomplete="off"
+              ref="keyword"
+              v-model="options.subtitles.text"
+              :disabled="loading"
+              :placeholder="current.desc">
+          </textarea>
+          <input
+              type="file"
+              @change="onAudioFileChanged($event.target.files)"
+              :disabled="loading"
+              accept="audio/*"
+              class="subtitles-upload-file">
+          <i @click="downloadAudioSubtitles" class="material-icons subtitles-icon-action">file_download</i>
+        </div>
         <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
       </template>
 
       <template v-else-if="current.key === 'videoslice'">
-        <input
-            autofocus
-            autocomplete="off"
-            v-model="options.videoslice.source"
-            ref="keyword"
-            :disabled="loading"
-            :placeholder="current.desc[0]">
+        <div class="textarea-container videoslice-container">
+          <input
+              autofocus
+              autocomplete="off"
+              v-model="options.videoslice.source"
+              ref="keyword"
+              :disabled="loading"
+              :placeholder="current.desc[0]">
           <textarea
               autocomplete="off"
               v-model="options.videoslice.config"
               :disabled="loading"
               :placeholder="current.desc[1]">
           </textarea>
-        <i @click="sliceVideo" class="material-icons videoslice-icon-action">content_cut</i>
+          <i @click="sliceVideo" class="material-icons videoslice-icon-action">content_cut</i>
+        </div>
         <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
       </template>
     </div>
@@ -136,7 +161,7 @@ import { mapGetters } from 'vuex'
 import * as engineAPI from '../../api/engines'
 import translate from '../../api/google/translate'
 import suggest from '../../api/google/suggest'
-import { speechSubtitlesDownload, speechSpeak, videoSlice } from '../../api/api.js'
+import { speechSubtitlesDownload, speechSpeak, audioSubtitlesDownload, videoSlice } from '../../api/api.js'
 import doubanMovieSearch from '../../api/douban/movie'
 import download from '../../api/download.js'
 
@@ -154,6 +179,10 @@ export default {
           style: '',
           rate: '0%',
           pitch: '0%'
+        },
+        subtitles: {
+          audio: null,
+          text: ''
         },
         videoslice: {
           source: '',
@@ -227,13 +256,37 @@ export default {
       })
     },
 
-    // 下载字幕
+    // 下载配音字幕
     downloadSpeechSubtitles() {
       const data = this._getSpeechRequestData()
 
       this.loading = true
       speechSubtitlesDownload(data).then(res => {
         download(res, '配音字幕.zip')
+      }).catch(err => {
+        alert('下载失败：' + err)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+
+    // 音频文件选择后
+    onAudioFileChanged(files) {
+      if (files.length !== 1) return
+      this.options.subtitles.audio = files[0]
+    },
+
+    // 下载音频字幕
+    downloadAudioSubtitles() {
+      const { audio, text } = this.options.subtitles
+
+      const formData = new FormData()
+      formData.append('audio', audio)
+      formData.append('text', text)
+
+      this.loading = true
+      audioSubtitlesDownload(formData).then(res => {
+        download(res, '字幕.srt')
       }).catch(err => {
         alert('下载失败：' + err)
       }).finally(() => {
@@ -348,7 +401,7 @@ export default {
 
   & > .engines {
     position: absolute;
-    margin-top: -97px;
+    margin-top: -96px;
     z-index: 2;
 
     & > div {
@@ -494,15 +547,22 @@ input {
 textarea {
   display: block;
   width: 100%;
-  height: 300px;
+  height: 250px;
   padding: 15px 11px;
   font-family: inherit;
   font-size: 16px;
   font-weight: inherit;
-  background: #fff;
+  background: rgba(0,0,0,0);
   outline: none;
-  border: 1px solid #eee;
+  border: 0px solid #fff;
   color: rgba(0,0,0,.74)
+}
+
+.textarea-container {
+  display: block;
+  width: 100%;
+  height: 300px;
+  background: #fff;
 }
 
 .loading {
@@ -566,6 +626,35 @@ textarea {
   &.pitch {
     right: 215px;
   }
+}
+
+.subtitles-upload-file {
+  position: absolute;
+  top: 254px;
+  left: 0px;
+  height: 35px;
+  width: 250px;
+  background: rgba(0, 0, 0, 0);
+  cursor: pointer;
+}
+
+.subtitles-upload-file::-webkit-file-upload-button {
+  border: 1px solid #ccc;
+  border-radius: 1px;
+  color: #444;
+}
+
+.subtitles-icon-action {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: grey;
+  cursor: pointer;
+}
+
+.videoslice-container textarea {
+  height: 245px;
+  border-top: 1px solid #ccc;
 }
 
 .videoslice-icon-action {
