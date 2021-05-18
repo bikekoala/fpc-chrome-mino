@@ -87,10 +87,9 @@ function _toBase64(arraybuffer, type = 'audio/mpeg') {
 }
 
 function _buffer2json(buffer) {
-  const uint8Data = new Uint8Array(buffer)
-  const decodedString = String.fromCharCode.apply(null, uint8Data)
-
   try {
+    const uint8Data = new Uint8Array(buffer)
+    const decodedString = String.fromCharCode.apply(null, uint8Data)
     return JSON.parse(decodedString)
   } catch (e) {
     return buffer
