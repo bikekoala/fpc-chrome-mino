@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 const mClient = axios.create({
-  baseURL: 'http://10.10.0.10:3001',
-  //baseURL: 'http://localhost:3001',
+  //baseURL: 'http://10.10.0.10:3001',
+  baseURL: 'http://localhost:3001',
   timeout: 60000 * 10
 })
 
@@ -21,10 +21,10 @@ function speechSpeak(data) {
 /**
  * 配音字幕下载
  */
-function speechSubtitlesDownload(data) {
+function speechSubtitleDownload(data) {
   return _fmtBuffer(mClient({
     method: 'POST',
-    url: `/speech/subtitles`,
+    url: `/speech/subtitle`,
     data,
     responseType: 'arraybuffer'
   }), 'application/zip')
@@ -33,10 +33,10 @@ function speechSubtitlesDownload(data) {
 /**
  * 音频字幕下载
  */
-function audioSubtitlesDownload(data) {
+function audioSubtitleDownload(data) {
   return _fmtBuffer(mClient({
     method: 'POST',
-    url: `/audio/subtitles`,
+    url: `/audio/subtitle`,
     data,
     responseType: 'arraybuffer'
   }), 'application/octet-stream')
@@ -45,8 +45,15 @@ function audioSubtitlesDownload(data) {
 /**
  * 视频裁剪
  */
-function videoSlice(source, config) {
-  return _fmtNormal(mClient.post('/video/slice', { source, config }))
+function videoSlice(source, config, audio, subtitle) {
+  return _fmtNormal(mClient.post('/video/slice', { source, config, audio, subtitle }))
+}
+
+/**
+ * 视频元信息
+ */
+function videoMeta(source) {
+  return _fmtNormal(mClient.get('/video/meta', { params: { source } }))
 }
 
 function _fmtBuffer(client, type) {
@@ -96,9 +103,10 @@ function _buffer2json(buffer) {
   }
 }
 
-export {
+export default {
   speechSpeak,
-  speechSubtitlesDownload,
-  audioSubtitlesDownload,
-  videoSlice
+  speechSubtitleDownload,
+  audioSubtitleDownload,
+  videoSlice,
+  videoMeta
 }

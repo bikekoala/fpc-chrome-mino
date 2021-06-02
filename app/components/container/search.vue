@@ -28,14 +28,12 @@
           <textarea
               autofocus
               autocomplete="off"
-              ref="keyword"
-              v-model="keyword"
               :disabled="loading"
               :placeholder="current.desc">
           </textarea>
-          <i @click="downloadSpeechSubtitles" class="material-icons speech-icon-download-subtitles">file_download</i>
-          <i @click="downloadSpeechAudio" class="material-icons speech-icon-download-audio">cloud_download</i>
-          <i @click="speakSpeech" class="material-icons speech-icon-play">play_arrow</i>
+          <i @click="speechSubtitleDownload" class="material-icons speech-icon-download-subtitle">file_download</i>
+          <i @click="speechAudioDownload" class="material-icons speech-icon-download-audio">cloud_download</i>
+          <i @click="speechSpeak" class="material-icons speech-icon-play">play_arrow</i>
           <select class="speech-option name" v-model="options.speech.name">
             <option disabled>语音</option>
             <option v-for="option in current.options" :value="option.value">{{option.text}}</option>
@@ -81,13 +79,12 @@
         <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
       </template>
 
-      <template v-else-if="current.key === 'subtitles'">
+      <template v-else-if="current.key === 'subtitle'">
         <div class="textarea-container">
           <textarea
               autofocus
               autocomplete="off"
-              ref="keyword"
-              v-model="options.subtitles.text"
+              v-model="options.subtitle.text"
               :disabled="loading"
               :placeholder="current.desc">
           </textarea>
@@ -96,8 +93,8 @@
               @change="onAudioFileChanged($event.target.files)"
               :disabled="loading"
               accept="audio/*"
-              class="subtitles-upload-file">
-          <i @click="downloadAudioSubtitles" class="material-icons subtitles-icon-action">file_download</i>
+              class="subtitle-upload-file">
+          <i @click="audioSubtitleDownload" class="material-icons subtitle-icon-action">file_download</i>
         </div>
         <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
       </template>
@@ -108,7 +105,6 @@
               autofocus
               autocomplete="off"
               v-model="options.videoslice.source"
-              ref="keyword"
               :disabled="loading"
               :placeholder="current.desc[0]">
           <textarea
@@ -117,7 +113,19 @@
               :disabled="loading"
               :placeholder="current.desc[1]">
           </textarea>
-          <i @click="sliceVideo" class="material-icons videoslice-icon-action">content_cut</i>
+          <i @click="videoSlice" class="material-icons videoslice-icon-action">content_cut</i>
+          <select class="videoslice-option audio" v-model="options.videoslice.audio">
+            <option disabled>音频</option>
+            <option
+                v-for="(audio, index) in options.videoslice.audios"
+                :value="index">{{audio}}</option>
+          </select>
+          <select class="videoslice-option subtitle" v-model="options.videoslice.subtitle">
+            <option disabled>字幕</option>
+            <option
+                v-for="(subtitle, index) in options.videoslice.subtitles"
+                :value="index">{{subtitle}}</option>
+          </select>
         </div>
         <img src="/static/icons/loading.svg" class="loading" :class="loading ? '' : 'hide'">
       </template>
@@ -158,11 +166,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import * as engineAPI from '../../api/engines'
-import translate from '../../api/google/translate'
-import suggest from '../../api/google/suggest'
-import { speechSubtitlesDownload, speechSpeak, audioSubtitlesDownload, videoSlice } from '../../api/api.js'
-import doubanMovieSearch from '../../api/douban/movie'
+import * as engineAPI from '../../api/engines.js'
+import translate from '../../api/google/translate.js'
+import suggest from '../../api/google/suggest.js'
+import localapi from '../../api/api.js'
+import doubanMovieSearch from '../../api/douban/movie.js'
 import download from '../../api/download.js'
 
 const mSpeechAudio = new Audio()
@@ -180,13 +188,17 @@ export default {
           rate: '0%',
           pitch: '0%'
         },
-        subtitles: {
+        subtitle: {
           audio: null,
           text: ''
         },
         videoslice: {
+          audios: ['关闭'],
+          subtitles: ['关闭'],
+          audio: 0,
+          subtitle: 0,
           source: '',
-          config: ''
+          config: '',
         },
       },
       suggest: [],
@@ -205,8 +217,12 @@ export default {
   },
   watch: {
     keyword: function (text) {
-      if (!['baidu', 'video', 'movie'].includes(this.current.key)) return
-      this.suggestKeywords(text)
+      if (['baidu', 'video', 'movie'].includes(this.current.key)) {
+        this.suggestKeywords(text)
+      }
+    },
+    'options.videoslice.source': function () {
+      this.videoOptionsUpdate()
     }
   },
   computed: {
@@ -227,12 +243,12 @@ export default {
     },
 
     // 播放配音
-    speakSpeech() {
+    speechSpeak() {
       const data = this._getSpeechRequestData()
 
       this.loading = true
       mSpeechAudio.pause()
-      speechSpeak(data).then(res => {
+      localapi.speechSpeak(data).then(res => {
         mSpeechAudio.src = res
         mSpeechAudio.play()
       }).catch(err => {
@@ -243,11 +259,11 @@ export default {
     },
 
     // 下载配音
-    downloadSpeechAudio() {
+    speechAudioDownload() {
       const data = this._getSpeechRequestData()
 
       this.loading = true
-      speechSpeak(data).then(res => {
+      localapi.speechSpeak(data).then(res => {
         download(res, '配音.mp3')
       }).catch(err => {
         alert('下载失败：' + err)
@@ -257,11 +273,11 @@ export default {
     },
 
     // 下载配音字幕
-    downloadSpeechSubtitles() {
+    speechSubtitleDownload() {
       const data = this._getSpeechRequestData()
 
       this.loading = true
-      speechSubtitlesDownload(data).then(res => {
+      localapi.speechSubtitleDownload(data).then(res => {
         download(res, '配音字幕.zip')
       }).catch(err => {
         alert('下载失败：' + err)
@@ -273,19 +289,20 @@ export default {
     // 音频文件选择后
     onAudioFileChanged(files) {
       if (files.length !== 1) return
-      this.options.subtitles.audio = files[0]
+      this.options.subtitle.audio = files[0]
     },
 
     // 下载音频字幕
-    downloadAudioSubtitles() {
-      const { audio, text } = this.options.subtitles
+    audioSubtitleDownload() {
+      const { audio, text } = this.options.subtitle
+      if (!audio) return alert('音频文件不能为空')
 
       const formData = new FormData()
       formData.append('audio', audio)
       formData.append('text', text)
 
       this.loading = true
-      audioSubtitlesDownload(formData).then(res => {
+      localapi.audioSubtitleDownload(formData).then(res => {
         download(res, '字幕.srt')
       }).catch(err => {
         alert('下载失败：' + err)
@@ -295,13 +312,43 @@ export default {
     },
 
     // 裁切视频
-    sliceVideo() {
+    videoOptionsUpdate() {
+      const source = this.options.videoslice.source.trim()
+
+      localapi.videoMeta(source).then(res => {
+        const audios = [], subtitles = []
+        for (const stream of res.streams) {
+          if (stream.codec_type === 'audio' && stream.tags.title) {
+            audios.push(stream.tags.title)
+          }
+          if (stream.codec_type === 'subtitle' && stream.tags.title) {
+            subtitles.push(stream.tags.title)
+          }
+        }
+        audios.unshift('关闭')
+        subtitles.unshift('关闭')
+
+        this.options.videoslice.audios = audios
+        this.options.videoslice.subtitles = subtitles
+      }).catch(e => {
+        this.options.videoslice.audios = ['关闭']
+        this.options.videoslice.subtitles = ['关闭']
+      }).finally(() => {
+        this.options.videoslice.audio = 0
+        this.options.videoslice.subtitle = 0
+      })
+    },
+
+    // 裁切视频
+    videoSlice() {
       const source = this.options.videoslice.source.trim()
       const config = this.options.videoslice.config.trim()
-      if (!source || !config) return alert('视频路径或片段配置不能为空')
+      const audio = this.options.videoslice.audio
+      const subtitle = this.options.videoslice.subtitle
+      if (!source || !config) return alert('视频路径或时间片段不能为空')
 
       this.loading = true
-      videoSlice(source, config).then(res => {
+      localapi.videoSlice(source, config, audio, subtitle).then(res => {
         alert('裁剪成功：' + res)
       }).catch(err => {
         alert('裁剪失败：' + err)
@@ -579,7 +626,7 @@ textarea {
   display: none;
 }
 
-.speech-icon-download-subtitles {
+.speech-icon-download-subtitle {
   position: absolute;
   top: 16px;
   right: 10px;
@@ -628,7 +675,7 @@ textarea {
   }
 }
 
-.subtitles-upload-file {
+.subtitle-upload-file {
   position: absolute;
   top: 254px;
   left: 0px;
@@ -638,13 +685,13 @@ textarea {
   cursor: pointer;
 }
 
-.subtitles-upload-file::-webkit-file-upload-button {
+.subtitle-upload-file::-webkit-file-upload-button {
   border: 1px solid #ccc;
   border-radius: 1px;
   color: #444;
 }
 
-.subtitles-icon-action {
+.subtitle-icon-action {
   position: absolute;
   top: 16px;
   right: 10px;
@@ -664,4 +711,23 @@ textarea {
   color: grey;
   cursor: pointer;
 }
+
+.videoslice-option {
+  position: absolute;
+  top: 270px;
+  right: 0;
+  cursor: pointer;
+  border: none;
+  color: grey;
+
+  &.audio {
+    right: 10px;
+  }
+
+  &.subtitle {
+    right: 105px;
+  }
+
+}
+
 </style>

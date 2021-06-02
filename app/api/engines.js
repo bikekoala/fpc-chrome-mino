@@ -223,14 +223,14 @@ export const allEngines = [
   },
   {
     name: '字幕',
-    desc: 'Q: 如何提高字幕文本的准确性？\nA: 将台词粘贴到这里！',
-    key: 'subtitles'
+    desc: 'Q: 如何提高字幕文本的准确性？\nA: 将台词粘贴到这里～',
+    key: 'subtitle'
   },
   {
-    name: '视频切割',
+    name: '切割',
     desc: [
       '视频路径：\\\\f1\\影视-只读\\movies\\菊次郎的夏天 (1999).mp4',
-      '片段配置：\n10:00\t11:00\n58:30\t01:00:00'
+      '时间片段：\n10:00\t11:00\n58:30\t01:00:00'
     ],
     key: 'videoslice'
   },
