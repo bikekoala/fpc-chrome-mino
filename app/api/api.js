@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 const mClient = axios.create({
-  //baseURL: 'http://10.10.0.10:3001',
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://10.10.0.10:3001',
+  //baseURL: 'http://localhost:3001',
   timeout: 60000 * 10
 })
 
