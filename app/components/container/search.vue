@@ -28,6 +28,7 @@
           <textarea
               autofocus
               autocomplete="off"
+              v-model="keyword"
               :disabled="loading"
               :placeholder="current.desc">
           </textarea>
