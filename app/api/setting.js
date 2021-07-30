@@ -8,7 +8,7 @@ export const defaluts = {
   search_youtube_trans: {
     name: 'search_youtube_trans',
     text: 'Youtube 自动翻译',
-    status: true,
+    status: false,
     storeKey: KEYS.SETTING_SEARCH_YOUTUBE_TRANS
   },
   application: {
